@@ -19,6 +19,7 @@ class NumericalVWindPhysicsHandler(PhysicsHandler):
         self.height = height
         self.distance = distance
         self.data = None
+        self.windx = 0
 
     def compute(self):
         tstart = 0
@@ -27,7 +28,7 @@ class NumericalVWindPhysicsHandler(PhysicsHandler):
         trng = np.linspace(tstart, tend, tsamples)
 
         def vx(x, t, b, v0, theta):
-            return v0 * np.cos(theta) * np.exp(-b * t)
+            return v0 * np.cos(theta) * np.exp(-b * t) - self.windx
 
         def vy(y, t, g, b, v0, theta):
             return (((g / b) + (v0 * np.sin(theta))) * np.exp(-b * t)) - (g / b)

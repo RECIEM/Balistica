@@ -37,7 +37,7 @@ class NumericalV2WindGUI(tk.Frame):
         self.ulpanel.pack(side=tk.TOP)
 
         # Control for angle
-        self.anglelable = tk.Label(self.ulpanel, text='Angle (degrees)')
+        self.anglelable = tk.Label(self.ulpanel, text='Initial angle (degrees)')
         self.anglelable.grid(row=0, column=0)
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170,orient=tk.HORIZONTAL)
         self.angleinput.grid(row=0, column=1)
@@ -54,6 +54,8 @@ class NumericalV2WindGUI(tk.Frame):
         self.velocityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.velocityinput.grid(row=2, column=1)
 
+        self.velocityinput.insert(0, '125')
+
         self.latIlabel = tk.Label(self.ulpanel, text='I. Lat (m)')
         self.latIlabel.grid(row=3, column=0)
         self.lonIlabel = tk.Label(self.ulpanel, text='I. Lon (m)')
@@ -68,6 +70,9 @@ class NumericalV2WindGUI(tk.Frame):
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightIinput.grid(row=4, column=2)
 
+        self.latIinput.insert(0, '0')
+        self.lonIinput.insert(0, '0')
+        self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
         self.pblanklabel.grid(row=5, column=0, columnspan=2)
@@ -86,6 +91,10 @@ class NumericalV2WindGUI(tk.Frame):
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightFinput.grid(row=7, column=2)
 
+        self.latFinput.insert(0, '100')
+        self.lonFinput.insert(0, '100')
+        self.heightFinput.insert(0, '0')
+
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
                                            offvalue=False, text='Show barrier')
@@ -94,31 +103,17 @@ class NumericalV2WindGUI(tk.Frame):
         self.pwindlabel = tk.Label(self.ulpanel, text='Wind settings:')
         self.pwindlabel.grid(row=9, column=0, columnspan=2)
 
-        self.nsdir = tk.IntVar()
-        self.nsdir.set(1)
-        self.windnorth = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.nsdir, indicatoron=0,
-                                        text='North', value=1)
-        self.windnorth.grid(row=10, column=0)
-        self.windsouth = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.nsdir, indicatoron=0,
-                                        text='South', value=-1)
-        self.windsouth.grid(row=10, column=1)
-        self.windanlabel = tk.Label(self.ulpanel, text='Angle (degrees):')
-        self.windanlabel.grid(row=10, column=2)
-        self.windangle = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.windangle.grid(row=10, column=3)
+        self.windanlabel = tk.Label(self.ulpanel, text='Azimuth (degrees):')
+        self.windanlabel.grid(row=10, column=0)
+        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=200, orient=tk.HORIZONTAL)
+        self.windangle.grid(row=10, column=1, columnspan=2)
 
-        self.ewdir = tk.IntVar()
-        self.ewdir.set(1)
-        self.windeast = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.ewdir, indicatoron=0,
-                                       text='East', value=1)
-        self.windeast.grid(row=11, column=0)
-        self.windwest = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.ewdir, indicatoron=0,
-                                       text='West', value=-1)
-        self.windwest.grid(row=11, column=1)
         self.windmglabel = tk.Label(self.ulpanel, text='Magnitude (m/s):')
-        self.windmglabel.grid(row=11, column=2)
+        self.windmglabel.grid(row=11, column=0)
         self.windmag = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.windmag.grid(row=11, column=3)
+        self.windmag.grid(row=11, column=1)
+
+        self.windmag.insert(0, '0')
 
         # Controls grid for upper left pannel
         self.blpanel = tk.Frame(self.leftpanel)
@@ -221,12 +216,103 @@ class NumericalV2WindGUI(tk.Frame):
 
         return (distance, height)
 
+    def consumebounds(self):
+        latI = 0.0
+        try:
+            latI = float(self.latIinput.get())
+        except:
+            self.userlabel['text'] = "Initial latitude format incorrect"
+            self.bounds = None
 
+        latF = 0.0
+        try:
+            latF = float(self.latFinput.get())
+        except:
+            self.userlabel['text'] = "Final latitude format incorrect"
+            self.bounds = None
+
+        lonI = 0.0
+        try:
+            lonI = float(self.lonIinput.get())
+        except:
+            self.userlabel['text'] = "Initial longitude format incorrect"
+            self.bounds = None
+
+        lonF = 0.0
+        try:
+            lonF = float(self.lonFinput.get())
+        except:
+            self.userlabel['text'] = "Final longitude format incorrect"
+            self.bounds = None
+
+        heightI = 0.0
+        try:
+            heightI = float(self.heightIinput.get())
+        except:
+            self.userlabel['text'] = "Initial latitude format incorrect"
+            self.bounds = None
+
+        heightF = 0.0
+        try:
+            heightF = float(self.heightFinput.get())
+        except:
+            self.userlabel['text'] = "Initial latitude format incorrect"
+            self.bounds = None
+
+        self.bounds = (latI, latF, lonI, lonF, heightI, heightF)
+
+    def consumeparams(self):
+        # Process lat, lon and height data
+        self.consumebounds()
+
+        # With that, compute the contribution of wind in x, z
+        if self.bounds is not None:
+            # First, compute the components of the wind
+            try:
+                windmag = float(self.windmag.get())
+            except:
+                self.userlabel['text'] = "Wind speed magnitude, format incorrect"
+                return
+
+            try:
+                windtheta = np.deg2rad(float(self.windangle.get()))
+            except:
+                self.userlabel['text'] = "Wind angle, format incorrect"
+                return
+
+            # Second, compute the linear transformation that computes the inner product of
+            # wind contribution with respect to the direction of the trajectory
+            latI, latF, lonI, lonF, _, _ = self.bounds
+
+            dx = lonF - lonI
+            dy = latF - latI
+
+            if (dx <= 0) or (dy <= 0):
+                self.userlabel['text'] = "Distance must be greater than zero"
+                return
+
+            beta = np.arctan(np.abs(dy / dx))
+
+            if (dx > 0) and (dy > 0):
+                azimuth = np.pi / 2 - windtheta
+            elif (dx > 0) and (dy < 0):
+                azimuth = np.pi / 2 + windtheta
+            elif (dx < 0) and (dy < 0):
+                azimuth = np.pi * (3.0 / 2) - windtheta
+            else:
+                azimuth = np.pi * (3.0 / 2) + windtheta
+
+            self.physicshandler.windx = windmag * np.cos(azimuth - beta)
+            self.goodparams = True
 
     def compute(self):
+        self.consumeparams()
+
+        if not self.goodparams:
+            return
+
         self.userlabel['text'] = ""
 
-        vel0 = 0.0
         try:
             vel0 = float(self.velocityinput.get())
         except:
@@ -257,7 +343,8 @@ class NumericalV2WindGUI(tk.Frame):
             s.destroy()
 
         figtx, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['x'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['x'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Distance (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -272,7 +359,8 @@ class NumericalV2WindGUI(tk.Frame):
             s.destroy()
 
         figty, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['y'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -287,7 +375,8 @@ class NumericalV2WindGUI(tk.Frame):
             s.destroy()
 
         figtv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -326,7 +415,8 @@ class NumericalV2WindGUI(tk.Frame):
             s.destroy()
 
         figxv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['x'] <= self.physicshandler.totalR()]
+        axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -341,7 +431,8 @@ class NumericalV2WindGUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['v'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
+        axs.plot(selected['v'], selected['y'], '-', linewidth=2, color='b')
         axs.set_xlabel('Velocity (m/s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -398,5 +489,5 @@ class NumericalV2WindGUI(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = NumericalVWindGUI()
+    app = NumericalV2WindGUI()
     app.mainloop()

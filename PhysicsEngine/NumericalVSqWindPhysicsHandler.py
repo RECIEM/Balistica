@@ -20,6 +20,7 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
         self.height = height
         self.distance = distance
         self.data = None
+        self.windx = 0
 
     def compute(self):
         tstart = 0
@@ -33,7 +34,7 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
         def acc(t, v):
             vx = v[0]
             vy = v[1]
-            dvxdt = -self.b * vx * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
+            dvxdt = -self.b * vx * np.sqrt(np.power(vx, 2) + np.power(vy, 2)) - self.windx
             dvydt = -self.g - self.b * vy * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
             return [dvxdt, dvydt]
 

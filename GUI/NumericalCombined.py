@@ -64,6 +64,10 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.cinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.cinput.grid(row=3, column=2)
 
+        self.ainput.insert(0, '0.05')
+        self.binput.insert(0, '0.05')
+        self.cinput.insert(0, '0.05')
+
         # Control for density
         self.denslable = tk.Label(self.ulpanel, text='Air density (kg/m^3)')
         self.denslable.grid(row=4, column=0)
@@ -73,7 +77,7 @@ class NumericalV2WindExtGUI(tk.Frame):
         # Control for drag
         self.draglable = tk.Label(self.ulpanel, text='Drag coefficient (dimensionless)')
         self.draglable.grid(row=5, column=0)
-        self.draginput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
+        self.draginput = tk.Scale(self.ulpanel, from_=0.01, to=2, resolution=0.01, length=170, orient=tk.HORIZONTAL)
         self.draginput.grid(row=5, column=1)
 
         # Control for angle
@@ -87,6 +91,8 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.velocitylabel.grid(row=7, column=0)
         self.velocityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.velocityinput.grid(row=7, column=1)
+
+        self.velocityinput.insert(0, '125')
 
         self.latIlabel = tk.Label(self.ulpanel, text='I. Lat (m)')
         self.latIlabel.grid(row=8, column=0)
@@ -102,6 +108,9 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightIinput.grid(row=9, column=2)
 
+        self.latIinput.insert(0, '0')
+        self.lonIinput.insert(0, '0')
+        self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
         self.pblanklabel.grid(row=10, column=0, columnspan=2)
@@ -119,6 +128,10 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.lonFinput.grid(row=12, column=1)
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightFinput.grid(row=12, column=2)
+
+        self.latFinput.insert(0, '100')
+        self.lonFinput.insert(0, '100')
+        self.heightFinput.insert(0, '0')
 
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
