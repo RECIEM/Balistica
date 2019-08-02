@@ -21,6 +21,7 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
         self.distance = distance
         self.data = None
         self.windx = 0
+        self.barrier = False
 
     def compute(self):
         tstart = 0
@@ -55,10 +56,7 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
              'v': darray[:, 5]})
         self.data = self.data[self.data['y'] >= 0.0]
 
-        if self.height >= 0:
-            self.data = self.data[self.data['x'] <= self.distance]
-
-        if self.height >= 0:
+        if self.barrier:
             self.data = self.data[self.data['x'] <= self.distance]
 
     def save_csv(self, filename):

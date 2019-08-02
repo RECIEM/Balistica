@@ -127,7 +127,7 @@ class NumericalV2GUI(tk.Frame):
         self.computebutton = tk.Button(self.blpanel, text="v(t) vs. x(t)", width=10, command=self.xvGraph, default=tk.NORMAL)
         self.computebutton.grid(row=3, column=1)
 
-        self.computebutton = tk.Button(self.blpanel, text="z(t) vs. v(t)", width=10, command=self.yvGraph, default=tk.NORMAL)
+        self.computebutton = tk.Button(self.blpanel, text="v(t) vs. z(t)", width=10, command=self.yvGraph, default=tk.NORMAL)
         self.computebutton.grid(row=3, column=2)
 
         self.userlabel = tk.Label(self.blpanel, text="", fg="red")
@@ -331,9 +331,9 @@ class NumericalV2GUI(tk.Frame):
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
         selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
-        axs.plot(selected['v'], selected['y'], '-', linewidth=2, color='b')
-        axs.set_xlabel('Velocity (m/s)')
-        axs.set_ylabel('Height (m)')
+        axs.plot(selected['y'], selected['v'], '-', linewidth=2, color='b')
+        axs.set_xlabel('Height (m)')
+        axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
         axs.invert_xaxis()
         canvas = FigureCanvasTkAgg(figyv, master=self.rightpanel)

@@ -130,6 +130,7 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         self.data = pd.DataFrame(
             {'t': darray[:, 0], 'x': darray[:, 1], 'y': darray[:, 2], 'vx': darray[:, 3], 'vy': darray[:, 4],
              'v': darray[:, 5], 'cd': darray[:, 6]})
+
         if self.barrier:
             self.data = self.data[self.data['x'] <= self.distance]
 

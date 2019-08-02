@@ -135,6 +135,7 @@ class NumericalV2WindThermoGUI(tk.Frame):
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
                                            offvalue=False, text='Show barrier', command=self.setBarrierHandler)
         self.barriercheck.grid(row=12, column=0)
+
         self.idealset = tk.BooleanVar()
         self.idealcheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.idealset, onvalue=True,
                                            offvalue=False, text='Show ideal')
@@ -143,51 +144,16 @@ class NumericalV2WindThermoGUI(tk.Frame):
         self.pwindlabel = tk.Label(self.ulpanel, text='Wind settings:')
         self.pwindlabel.grid(row=13, column=0, columnspan=2)
 
-        self.nsdir = tk.IntVar()
-        self.nsdir.set(1)
-
-        def switchn():
-            self.windnorth.configure(background='#99ccff')
-            self.windsouth.configure(background='#ffffff')
-
-        def switchs():
-            self.windsouth.configure(background='#99ccff')
-            self.windnorth.configure(background='#ffffff')
-
-        self.windnorth = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.nsdir, indicatoron=0,
-                                        text='North', value=1, command=switchn, background='#99ccff')
-        self.windnorth.grid(row=15, column=0)
-        self.windsouth = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.nsdir, indicatoron=0,
-                                        text='South', value=-1, command=switchs)
-        self.windsouth.grid(row=15, column=1)
-
-        self.ewdir = tk.IntVar()
-        self.ewdir.set(1)
-
-        def switche():
-            self.windeast.configure(background='#99ccff')
-            self.windwest.configure(background='#ffffff')
-
-        def switchw():
-            self.windwest.configure(background='#99ccff')
-            self.windeast.configure(background='#ffffff')
-
-        self.windeast = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.ewdir, indicatoron=0,
-                                       text='East', value=1, background='#99ccff', command=switche)
-        self.windeast.grid(row=16, column=0)
-        self.windwest = tk.Radiobutton(self.ulpanel, justify=tk.RIGHT, variable=self.ewdir, indicatoron=0,
-                                       text='West', value=-1, command=switchw)
-        self.windwest.grid(row=16, column=1)
-
-        self.windanlabel = tk.Label(self.ulpanel, text='Angle (degrees):')
-        self.windanlabel.grid(row=17, column=0)
-        self.windangle = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170, orient=tk.HORIZONTAL)
-        self.windangle.grid(row=17, column=1, columnspan=2)
+        self.windanlabel = tk.Label(self.ulpanel, text='Azimuth (degrees):')
+        self.windanlabel.grid(row=14, column=0)
+        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=200, orient=tk.HORIZONTAL)
+        self.windangle.grid(row=14, column=1, columnspan=2)
 
         self.windmglabel = tk.Label(self.ulpanel, text='Magnitude (m/s):')
-        self.windmglabel.grid(row=18, column=0)
+        self.windmglabel.grid(row=15, column=0)
         self.windmag = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.windmag.grid(row=18, column=1)
+        self.windmag.grid(row=15, column=1)
+
         self.windmag.insert(0, '0')
 
         # Controls grid for upper left pannel
@@ -370,10 +336,6 @@ class NumericalV2WindThermoGUI(tk.Frame):
 
         # With that, compute the contribution of wind in x, z
         if self.bounds is not None:
-            # First, compute the components of the wind
-            windsignlon = self.ewdir.get()
-            windsignlat = self.nsdir.get()
-
             try:
                 windmag = float(self.windmag.get())
             except:
@@ -386,28 +348,29 @@ class NumericalV2WindThermoGUI(tk.Frame):
                 self.userlabel['text'] = "Wind angle, format incorrect"
                 return
 
-            u = windsignlon * windmag * np.cos(windtheta)
-            w = windsignlat * windmag * np.sin(windtheta)
-
             # Second, compute the linear transformation that computes the inner product of
             # wind contribution with respect to the direction of the trajectory
             latI, latF, lonI, lonF, _, _ = self.bounds
 
-            dy = lonF - lonI
-            dx = latF - latI
+            dx = lonF - lonI
+            dy = latF - latI
 
-            D = self.norm(dx, dy)
-
-            if D <= 0:
+            if (dx <= 0) or (dy <= 0):
                 self.userlabel['text'] = "Distance must be greater than zero"
                 return
 
-            self.physicshandler.windx = (1.0 / D) * (u * dx + w * dy)
+            beta = np.arctan(np.abs(dy / dx))
 
+            if (dx > 0) and (dy > 0):
+                azimuth = np.pi / 2 - windtheta
+            elif (dx > 0) and (dy < 0):
+                azimuth = np.pi / 2 + windtheta
+            elif (dx < 0) and (dy < 0):
+                azimuth = np.pi * (3.0 / 2) - windtheta
+            else:
+                azimuth = np.pi * (3.0 / 2) + windtheta
 
-            print(f'{windtheta} {windmag} {windsignlon} {windsignlat} : {u} {w} {dx} {dy} {D} => {self.physicshandler.windx}')
-            #self.physicshandler.windx = (1.0 / D) * (-u * dy + w * dx)
-
+            self.physicshandler.windx = windmag * np.cos(azimuth - beta)
             self.goodparams = True
 
     def compute(self):
@@ -442,10 +405,13 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtx, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['x'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['x'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['t'], self.idealphysicshandler.data['x'], '--', linewidth=1, color='g', label='Ideal')
+            iselected = self.idealphysicshandler.data[
+                self.idealphysicshandler.data['t'] <= self.idealphysicshandler.totalT()]
+            axs.plot(iselected['t'], iselected['x'], '--', linewidth=1, color='g', label='Ideal')
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Distance (m)')
@@ -465,10 +431,13 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figty, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['y'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['y'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['t'], self.idealphysicshandler.data['y'], '--', linewidth=1, color='g', label='Ideal')
+            iselected = self.idealphysicshandler.data[
+                self.idealphysicshandler.data['t'] <= self.idealphysicshandler.totalT()]
+            axs.plot(iselected['t'], iselected['y'], '--', linewidth=1, color='g', label='Ideal')
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
@@ -488,10 +457,13 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['t'], self.idealphysicshandler.data['v'], '--', linewidth=1, color='g', label='Ideal')
+            iselected = self.idealphysicshandler.data[
+                self.idealphysicshandler.data['t'] <= self.idealphysicshandler.totalT()]
+            axs.plot(iselected['t'], iselected['v'], '--', linewidth=1, color='g', label='Ideal')
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
@@ -560,10 +532,13 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figxv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+        selected = self.physicshandler.data[self.physicshandler.data['x'] <= self.physicshandler.totalR()]
+        axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['x'], self.idealphysicshandler.data['v'], '--', linewidth=1, color='g', label='Ideal')
+            iselected = self.idealphysicshandler.data[
+                self.idealphysicshandler.data['x'] <= self.idealphysicshandler.totalR()]
+            axs.plot(iselected['x'], iselected['v'], '--', linewidth=1, color='g', label='Ideal')
 
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
@@ -583,11 +558,13 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['y'], self.physicshandler.data['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
+        axs.plot(selected['y'], selected['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['y'], self.idealphysicshandler.data['v'], '--', linewidth=1, color='g', label='Ideal')
-            print(self.idealphysicshandler.data['y'])
+            iselected = self.idealphysicshandler.data[
+                self.idealphysicshandler.data['y'] >= self.idealphysicshandler.height]
+            axs.plot(iselected['y'], iselected['v'], '--', linewidth=1, color='g', label='Ideal')
 
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')

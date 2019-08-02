@@ -27,9 +27,9 @@ class NumericalCombinedHandler(PhysicsHandler):
         self.height = height
         self.distance = distance
         self.windx = 0
-        self.windz = 0
         self.data = None
         self.computeIdeal = False
+        self.barrier = False
 
     @staticmethod
     def norm(a, b):
@@ -79,6 +79,9 @@ class NumericalCombinedHandler(PhysicsHandler):
             {'t': darray[:, 0], 'x': darray[:, 1], 'y': darray[:, 2], 'vx': darray[:, 3], 'vy': darray[:, 4],
              'v': darray[:, 5]})
         self.data = self.data[self.data['y'] >= self.height]
+
+        if self.barrier:
+            self.data = self.data[self.data['x'] <= self.distance]
 
     def save_csv(self, filename):
         if (filename == '') or (self.data is None):
