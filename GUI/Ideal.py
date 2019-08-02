@@ -229,7 +229,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figtx, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['x'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['x'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Distance (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
@@ -244,7 +245,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figty, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['y'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
@@ -259,7 +261,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figtv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
+        axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
@@ -298,7 +301,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figxv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['x'] <= self.physicshandler.totalR()]
+        axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
@@ -313,7 +317,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['v'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
+        axs.plot(selected['v'], selected['y'], '-', linewidth=2, color='b')
         axs.set_xlabel('Velocity (m/s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
