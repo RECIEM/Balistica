@@ -37,7 +37,7 @@ class NumericalVGUI(tk.Frame):
         self.ulpanel.pack(side=tk.TOP)
 
         # Control for angle
-        self.anglelable = tk.Label(self.ulpanel, text='Angle (degrees)')
+        self.anglelable = tk.Label(self.ulpanel, text='Initial angle (degrees)')
         self.anglelable.grid(row=0, column=0)
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170,orient=tk.HORIZONTAL)
         self.angleinput.grid(row=0, column=1)
@@ -54,6 +54,8 @@ class NumericalVGUI(tk.Frame):
         self.velocityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.velocityinput.grid(row=2, column=1)
 
+        self.velocityinput.insert(0, '125')
+
         self.latIlabel = tk.Label(self.ulpanel, text='I. Lat (m)')
         self.latIlabel.grid(row=3, column=0)
         self.lonIlabel = tk.Label(self.ulpanel, text='I. Lon (m)')
@@ -68,6 +70,9 @@ class NumericalVGUI(tk.Frame):
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightIinput.grid(row=4, column=2)
 
+        self.latIinput.insert(0, '0')
+        self.lonIinput.insert(0, '0')
+        self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
         self.pblanklabel.grid(row=5, column=0, columnspan=2)
@@ -85,6 +90,10 @@ class NumericalVGUI(tk.Frame):
         self.lonFinput.grid(row=7, column=1)
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightFinput.grid(row=7, column=2)
+
+        self.latFinput.insert(0, '100')
+        self.lonFinput.insert(0, '100')
+        self.heightFinput.insert(0, '0')
 
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
@@ -142,7 +151,7 @@ class NumericalVGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Projectile ballistics with drag (b)')
+        axs.set_title('Projectile ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -217,8 +226,10 @@ class NumericalVGUI(tk.Frame):
 
         if self.barrierset.get():
             self.physicshandler.height = height
+            self.physicshandler.barrier = True
         else:
             self.physicshandler.height = -1
+            self.physicshandler.barrier = False
 
         self.physicshandler.compute()
         self.xyGraph()
@@ -277,7 +288,12 @@ class NumericalVGUI(tk.Frame):
         axs.plot(self.physicshandler.data['x'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Height (m)')
-        maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
+
+        if self.barrierset.get():
+            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
+        else:
+            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
+
         axs.set_xlim(0, maxax)
         axs.set_ylim(0, maxax)
         axs.set_title('Projectile ballistics with drag (b) proportional to v')

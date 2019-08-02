@@ -37,7 +37,7 @@ class AnalyticVGUI(tk.Frame):
         self.ulpanel.pack(side=tk.TOP)
 
         # Control for angle
-        self.anglelable = tk.Label(self.ulpanel, text='Angle (degrees)')
+        self.anglelable = tk.Label(self.ulpanel, text='Initial angle (degrees)')
         self.anglelable.grid(row=0, column=0)
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170,orient=tk.HORIZONTAL)
         self.angleinput.grid(row=0, column=1)
@@ -70,10 +70,9 @@ class AnalyticVGUI(tk.Frame):
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightIinput.grid(row=4, column=2)
 
-        self.latIinput.insert(0, "0")
-        self.lonIinput.insert(0, "0")
-        self.heightIinput.insert(0, "0")
-
+        self.latIinput.insert(0, '0')
+        self.lonIinput.insert(0, '0')
+        self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
         self.pblanklabel.grid(row=5, column=0, columnspan=2)
@@ -92,8 +91,8 @@ class AnalyticVGUI(tk.Frame):
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightFinput.grid(row=7, column=2)
 
-        self.latFinput.insert(0, '0')
-        self.lonFinput.insert(0, '0')
+        self.latFinput.insert(0, '100')
+        self.lonFinput.insert(0, '100')
         self.heightFinput.insert(0, '0')
 
         self.barrierset = tk.BooleanVar()

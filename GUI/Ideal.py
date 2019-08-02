@@ -64,9 +64,9 @@ class IdealGUI(tk.Frame):
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightIinput.grid(row=3, column=2)
 
-        self.latIinput.insert(0, "0")
-        self.lonIinput.insert(0, "0")
-        self.heightIinput.insert(0, "0")
+        self.latIinput.insert(0, '0')
+        self.lonIinput.insert(0, '0')
+        self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
         self.pblanklabel.grid(row=4, column=0, columnspan=2)
@@ -85,8 +85,8 @@ class IdealGUI(tk.Frame):
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.heightFinput.grid(row=6, column=2)
 
-        self.latFinput.insert(0, '0')
-        self.lonFinput.insert(0, '0')
+        self.latFinput.insert(0, '100')
+        self.lonFinput.insert(0, '100')
         self.heightFinput.insert(0, '0')
 
         self.barrierset = tk.BooleanVar()
@@ -216,8 +216,10 @@ class IdealGUI(tk.Frame):
 
         if self.barrierset.get():
             self.physicshandler.height = height
+            self.physicshandler.barrier = True
         else:
             self.physicshandler.height = -1
+            self.physicshandler.barrier = False
 
         self.physicshandler.compute()
         self.xyGraph()
