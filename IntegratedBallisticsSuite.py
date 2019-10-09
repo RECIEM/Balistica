@@ -34,7 +34,7 @@ class IntegratedGUI(tk.Tk):
         modelsmenu.add_separator()
         modelsmenu.add_command(label='Numerical ~ velocity + wind', command=self.add_nmrcl_v_wind)
         modelsmenu.add_command(label='Numerical ~ velocity sq. + wind', command=self.add_nmrcl_v2_wind)
-        modelsmenu.add_command(label='Numerical ~ velocity sq. + wind + mass and sphericity',
+        modelsmenu.add_command(label='Numerical ~ velocity sq. + wind + density and sphericity',
                                command=self.add_nmrcl_v2_wind_ext)
         modelsmenu.add_command(label='Numerical ~ vel. sq + wind + thermodynamics',
                                command=self.add_nmrcl_v2_wind_ext_thermo)

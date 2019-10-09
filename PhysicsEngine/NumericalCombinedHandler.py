@@ -14,11 +14,9 @@ from PhysicsEngine import PhysicsHandler
 class NumericalCombinedHandler(PhysicsHandler):
     sa_norm = 1.6075
 
-    def __init__(self, v0=0, theta=0, m=1, rho=1, a=0.0, b=0.0, c=0.0, Cd=1, height=0, distance=0):
+    def __init__(self, v0=0, theta=0, dens=0.7, rho=1, a=0.0, b=0.0, c=0.0, Cd=1, height=0, distance=0):
         self.v0 = v0
         self.theta = theta
-        self.m = m
-        self.m = m
         self.rho = rho
         self.a = a
         self.b = b
@@ -30,6 +28,16 @@ class NumericalCombinedHandler(PhysicsHandler):
         self.data = None
         self.computeIdeal = False
         self.barrier = False
+        self.dens = dens
+        self.m = 0
+
+    @property
+    def sph_volume(self):
+        radius = np.power(self.a * self.b * self.c, 1.0 / 3)
+        return (4.0 / 3.0) * np.pi * (radius ** 3)
+
+    def setMass(self):
+        self.m = self.dens * self.sph_volume
 
     @staticmethod
     def norm(a, b):

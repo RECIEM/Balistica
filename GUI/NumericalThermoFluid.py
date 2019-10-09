@@ -584,10 +584,8 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figvre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['v'], self.physicshandler.data['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
-
-        if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['y'], self.idealphysicshandler.data['v'], '--', linewidth=1, color='g', label='Ideal')
+        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
+        axs.plot(selected['v'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Velocity (m/s)')
         axs.set_ylabel('Cd')
@@ -607,10 +605,8 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['t'], self.physicshandler.data['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
-
-        if self.idealset.get():
-            axs.plot(self.idealphysicshandler.data['y'], self.idealphysicshandler.data['v'], '--', linewidth=1, color='g', label='Ideal')
+        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
+        axs.plot(selected['t'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Cd')

@@ -40,13 +40,13 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.ulpanel = tk.LabelFrame(self.leftpanel, text='Parameters')
         self.ulpanel.pack(side=tk.TOP)
 
-        # Control for mass
-        self.masslable = tk.Label(self.ulpanel, text='Projectile mass (kg)')
-        self.masslable.grid(row=0, column=0)
-        self.massinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.massinput.grid(row=0, column=1)
+        # Control for density
+        self.densitylabel = tk.Label(self.ulpanel, text='Projectile density (kg/m^3)')
+        self.densitylabel.grid(row=0, column=0)
+        self.densityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
+        self.densityinput.grid(row=0, column=1)
 
-        self.massinput.insert(0, '0.5')
+        self.densityinput.insert(0, '3400.0')
 
         # Control for sphericity
         self.pspherlabel = tk.Label(self.ulpanel, text='Sphericity')
@@ -85,7 +85,7 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.draginput.grid(row=5, column=1)
 
         # Control for angle
-        self.anglelable = tk.Label(self.ulpanel, text='Angle (degrees)')
+        self.anglelable = tk.Label(self.ulpanel, text='Initial angle (degrees)')
         self.anglelable.grid(row=6, column=0)
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170, orient=tk.HORIZONTAL)
         self.angleinput.grid(row=6, column=1)
@@ -270,10 +270,10 @@ class NumericalV2WindExtGUI(tk.Frame):
 
     def consumeparams(self):
         try:
-            # Convert from g to kg
-            self.physicshandler.m = float(self.massinput.get())
+            # Convert kg/m^3
+            self.physicshandler.dens = float(self.densityinput.get())
         except:
-            self.userlabel['text'] = "Mass format incorrect"
+            self.userlabel['text'] = "Density format incorrect"
             return
 
         try:
@@ -296,6 +296,9 @@ class NumericalV2WindExtGUI(tk.Frame):
         except:
             self.userlabel['text'] = "Sphericity for c, format incorrect"
             return
+
+        # Compute mass explicitly
+        self.physicshandler.setMass()
 
         try:
             # Convert to g/cm^3 to kg/m^3
