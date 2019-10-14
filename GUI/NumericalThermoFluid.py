@@ -497,20 +497,22 @@ class NumericalV2WindThermoGUI(tk.Frame):
         if self.idealset.get():
             if self.barrierset.get():
                 maxax = np.max([self.physicshandler.totalR() + boundarySize, self.physicshandler.maxH() + boundarySize,
-                            self.idealphysicshandler.totalR() + boundarySize,
+                            self.idealphysicshandler.totalR() + boundarySize, self.physicshandler.maxDistance() + boundarySize,
                                 self.idealphysicshandler.maxH() + boundarySize,  distance + boundarySize])
             else:
                 maxax = np.max([self.physicshandler.totalR() + boundarySize, self.physicshandler.maxH() + boundarySize,
-                                self.idealphysicshandler.totalR() + boundarySize,
+                                self.idealphysicshandler.totalR() + boundarySize, self.physicshandler.maxDistance() + boundarySize,
                                 self.idealphysicshandler.maxH() + boundarySize])
         else:
             if self.barrierset.get():
                 maxax = np.max([self.physicshandler.totalR() + boundarySize, self.physicshandler.maxH() + boundarySize,
+                                self.physicshandler.maxDistance() + boundarySize,
                                 distance + boundarySize])
             else:
-                maxax = np.max([self.physicshandler.totalR() + boundarySize, self.physicshandler.maxH() + boundarySize])
+                maxax = np.max([self.physicshandler.totalR() + boundarySize, self.physicshandler.maxH() + boundarySize,
+                                self.physicshandler.maxDistance() + boundarySize])
 
-        axs.set_xlim(0, maxax)
+        axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(np.min([0, height]), maxax)
         axs.set_title('Projectile ballistics')
 

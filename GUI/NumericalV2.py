@@ -295,7 +295,7 @@ class NumericalV2GUI(tk.Frame):
         else:
             maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
 
-        axs.set_xlim(0, maxax)
+        axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(0, maxax)
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
 

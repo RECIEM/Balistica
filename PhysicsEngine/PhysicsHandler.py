@@ -30,6 +30,10 @@ class PhysicsHandler(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def maxDistance(self):
+        pass
+
+    @abc.abstractmethod
     def totalT(self):
         pass
 

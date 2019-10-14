@@ -116,6 +116,12 @@ class NumericalCombinedHandler(PhysicsHandler):
             adjdata = self.data[self.data['y'] >= self.height]
             return adjdata.tail(1)['x'].values[0]
 
+    def maxDistance(self):
+        if self.data is None:
+            return 0.0
+        else:
+            return self.data['x'].max()
+
     def totalT(self):
         if self.data is None:
             return 0.0
