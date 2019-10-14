@@ -246,7 +246,7 @@ class IdealGUI(tk.Frame):
 
         figty, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
         selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
-        axs.plot(selected['t'], selected['y'], '-', linewidth=2, color='b')
+        axs.plot(selected['t'], selected['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')
@@ -278,7 +278,7 @@ class IdealGUI(tk.Frame):
 
         distance, height = self.geography()
         figxy, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Height (m)')
         maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
@@ -317,8 +317,8 @@ class IdealGUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
-        axs.plot(selected['y'], selected['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+        axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v')

@@ -128,7 +128,7 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         darray = np.transpose(np.array([trng, xrng, yrng, vxrng, vyrng, vrng, cdrng]))
 
         self.data = pd.DataFrame(
-            {'t': darray[:, 0], 'x': darray[:, 1], 'y': darray[:, 2], 'vx': darray[:, 3], 'vy': darray[:, 4],
+            {'t': darray[:, 0], 'x': darray[:, 1], 'z': darray[:, 2], 'vx': darray[:, 3], 'vz': darray[:, 4],
              'v': darray[:, 5], 'cd': darray[:, 6]})
 
         if self.barrier:
@@ -144,19 +144,19 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            return self.data[self.data['y'] == self.data['y'].max()]['t'].values[0]
+            return self.data[self.data['z'] == self.data['z'].max()]['t'].values[0]
 
     def maxH(self):
         if self.data is None:
             return 0.0
         else:
-            return self.data[self.data['y'] == self.data['y'].max()]['y'].values[0]
+            return self.data[self.data['z'] == self.data['z'].max()]['z'].values[0]
 
     def totalR(self):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['y'] >= self.height]
+            adjdata = self.data[self.data['z'] >= self.height]
             return adjdata.tail(1)['x'].values[0]
 
     def maxDistance(self):
@@ -169,23 +169,23 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['y'] >= self.height]
+            adjdata = self.data[self.data['z'] >= self.height]
             return adjdata.tail(1)['t'].values[0]
 
     def finalTheta(self):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['y'] >= self.height]
+            adjdata = self.data[self.data['z'] >= self.height]
 
             if adjdata.tail(1)['vx'].values[0] == 0:
                 return 90.0
             else:
-                return -1 * np.rad2deg(np.arctan(adjdata.tail(1)['vy'].values[0] / adjdata.tail(1)['vx'].values[0]))
+                return -1 * np.rad2deg(np.arctan(adjdata.tail(1)['vz'].values[0] / adjdata.tail(1)['vx'].values[0]))
 
     def finalV(self):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['y'] >= self.height]
+            adjdata = self.data[self.data['z'] >= self.height]
             return adjdata.tail(1)['v'].values[0]

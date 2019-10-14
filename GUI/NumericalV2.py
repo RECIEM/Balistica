@@ -254,7 +254,7 @@ class NumericalV2GUI(tk.Frame):
 
         figty, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
         selected = self.physicshandler.data[self.physicshandler.data['t'] <= self.physicshandler.totalT()]
-        axs.plot(selected['t'], selected['y'], '-', linewidth=2, color='b')
+        axs.plot(selected['t'], selected['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -286,7 +286,7 @@ class NumericalV2GUI(tk.Frame):
 
         distance, height = self.geography()
         figxy, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['y'], '-', linewidth=2, color='b')
+        axs.plot(self.physicshandler.data['x'], self.physicshandler.data['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Height (m)')
 
@@ -330,8 +330,8 @@ class NumericalV2GUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['y'] >= self.physicshandler.height]
-        axs.plot(selected['y'], selected['v'], '-', linewidth=2, color='b')
+        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+        axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
@@ -346,22 +346,22 @@ class NumericalV2GUI(tk.Frame):
         stats = tk.LabelFrame(self.rightpanel, text='Results')
         stats.grid(row=1, column=0)
 
-        rangeLabel = tk.Label(stats, text=f'Range (R): {self.physicshandler.totalR():.1f} m')
+        rangeLabel = tk.Label(stats, text=f'Range: {self.physicshandler.totalR():.1f} m')
         rangeLabel.grid(row=0, column=0)
 
-        rangeLabel = tk.Label(stats, text=f'Max height (H): {self.physicshandler.maxH():.1f} m')
+        rangeLabel = tk.Label(stats, text=f'Max height: {self.physicshandler.maxH():.1f} m')
         rangeLabel.grid(row=1, column=0)
 
-        mheightLabel = tk.Label(stats, text=f'Time to max height (Th): {self.physicshandler.maxT():.1f} s')
+        mheightLabel = tk.Label(stats, text=f'Time to max height: {self.physicshandler.maxT():.1f} s')
         mheightLabel.grid(row=2, column=0)
 
-        mheightLabel = tk.Label(stats, text=f'Time of flight (TR): {self.physicshandler.totalT():.1f} s')
+        mheightLabel = tk.Label(stats, text=f'Time of flight: {self.physicshandler.totalT():.1f} s')
         mheightLabel.grid(row=3, column=0)
 
-        mheightLabel = tk.Label(stats, text=f'Velocity of impact (VI): {self.physicshandler.finalV():.1f} m/s')
+        mheightLabel = tk.Label(stats, text=f'Velocity of impact: {self.physicshandler.finalV():.1f} m/s')
         mheightLabel.grid(row=4, column=0)
 
-        mheightLabel = tk.Label(stats, text=f'Angle of impact (AI): {self.physicshandler.finalTheta():.1f} degrees')
+        mheightLabel = tk.Label(stats, text=f'Angle of impact: {self.physicshandler.finalTheta():.1f} degrees')
         mheightLabel.grid(row=5, column=0)
 
 
