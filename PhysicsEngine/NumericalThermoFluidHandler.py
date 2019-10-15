@@ -163,7 +163,8 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            return self.data['x'].max()
+            adjdata = self.data[self.data['z'] >= self.height]
+            return adjdata['x'].max()
 
     def totalT(self):
         if self.data is None:

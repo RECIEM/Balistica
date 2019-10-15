@@ -389,6 +389,7 @@ class NumericalV2WindExtGUI(tk.Frame):
         self.physicshandler.compute()
 
         if self.idealset.get():
+            print(f'Ideal barrier handler {self.idealset.get()}')
             self.idealphysicshandler.compute()
 
         self.xyGraph()

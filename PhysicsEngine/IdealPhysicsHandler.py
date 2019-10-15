@@ -10,7 +10,7 @@ from PhysicsEngine import PhysicsHandler
 
 
 class IdealPhysicsHandler(PhysicsHandler):
-    def __init__(self, v0=0, theta=0, h=-1, distance=-1):
+    def __init__(self, v0=0, theta=0, h=0, distance=-1):
         self.v0 = v0
         self.theta = theta
         self.b = 0

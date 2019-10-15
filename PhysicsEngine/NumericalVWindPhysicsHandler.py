@@ -12,7 +12,7 @@ from PhysicsEngine import PhysicsHandler
 
 class NumericalVWindPhysicsHandler(PhysicsHandler):
 
-    def __init__(self, v0=0, theta=0, b=1, height=-1, distance=-1):
+    def __init__(self, v0=0, theta=0, b=1, height=0, distance=-1):
         self.v0 = v0
         self.theta = theta
         self.b = b
@@ -77,7 +77,8 @@ class NumericalVWindPhysicsHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            return self.data['x'].max()
+            adjdata = self.data[self.data['z'] >= self.height]
+            return adjdata['x'].max()
 
     def totalT(self):
         if self.data is None:
