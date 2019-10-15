@@ -105,7 +105,7 @@ class NumericalV2WindGUI(tk.Frame):
 
         self.windanlabel = tk.Label(self.ulpanel, text='Azimuth (degrees):')
         self.windanlabel.grid(row=10, column=0)
-        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=200, orient=tk.HORIZONTAL)
+        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=360, orient=tk.HORIZONTAL)
         self.windangle.grid(row=10, column=1, columnspan=2)
 
         self.windmglabel = tk.Label(self.ulpanel, text='Magnitude (m/s):')
@@ -286,22 +286,22 @@ class NumericalV2WindGUI(tk.Frame):
             dx = lonF - lonI
             dy = latF - latI
 
-            if (dx <= 0) or (dy <= 0):
-                self.userlabel['text'] = "Distance must be greater than zero"
+            if dx == 0:
+                self.userlabel['text'] = "Final longitude difference must be different from zero"
                 return
 
-            beta = np.arctan(np.abs(dy / dx))
+            azimuth = windtheta
 
-            if (dx > 0) and (dy > 0):
-                azimuth = np.pi / 2 - windtheta
-            elif (dx > 0) and (dy < 0):
-                azimuth = np.pi / 2 + windtheta
-            elif (dx < 0) and (dy < 0):
-                azimuth = np.pi * (3.0 / 2) - windtheta
+            if (dy >= 0) and (dx != 0):
+                beta = np.arctan(dy / dx)
+            elif (dy < 0) and (dx != 0):
+                beta = np.pi + np.arctan(dy / dx)
+            elif (dy >= 0) and (dx == 0):
+                beta = 0
             else:
-                azimuth = np.pi * (3.0 / 2) + windtheta
+                beta = np.pi
 
-            self.physicshandler.windx = windmag * np.cos(azimuth - beta)
+            self.physicshandler.windx = -windmag * np.cos(azimuth - beta)
             self.goodparams = True
 
     def compute(self):
