@@ -139,7 +139,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
-                                           offvalue=False, text='Show barrier')
+                                           offvalue=False, text='Show barrier', command=self.setBarrierHandler)
         self.barriercheck.grid(row=13, column=0)
         self.idealset = tk.BooleanVar()
         self.idealcheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.idealset, onvalue=True,
@@ -218,6 +218,14 @@ class NumericalV2WindExtGUI(tk.Frame):
         canvas.get_tk_widget().grid(row=0, column=0)
         self.addStatistics()
         self.mostrecentfig = fig
+
+    def setBarrierHandler(self):
+        if self.barrierset.get():
+            self.physicshandler.barrier = True
+            self.idealphysicshandler.barrier = True
+        else:
+            self.physicshandler.barrier = False
+            self.idealphysicshandler.barrier = False
 
     @staticmethod
     def norm(a, b):
@@ -380,17 +388,14 @@ class NumericalV2WindExtGUI(tk.Frame):
         distance, height = self.geofigbounds()
         self.physicshandler.distance = distance
         self.physicshandler.height = height
-
-        if self.idealset.get():
-            pass
-        else:
-            pass
+        self.idealphysicshandler.distance = distance
+        self.idealphysicshandler.height = height
 
         self.physicshandler.compute()
 
         if self.idealset.get():
-            print(f'Ideal barrier handler {self.idealset.get()}')
             self.idealphysicshandler.compute()
+
 
         self.xyGraph()
 

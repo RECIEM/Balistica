@@ -53,11 +53,8 @@ class NumericalThermoFluidHandler(PhysicsHandler):
     @property
     def sphericity(self):
         radius = np.power(self.a * self.b * self.c, 1.0/3)
-        print(f'radius: {radius}')
         sphArea = 4 * np.pi * (radius ** 2)
-        print(f'sphere area: {sphArea}')
         parArea = self.surfArea
-        print(f'approx area: {parArea}')
         return sphArea/parArea
 
     @property
@@ -90,7 +87,6 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         self.m = self.dens * self.sph_volume
 
     def compute(self):
-        print(f'Wind velocity x: {self.windx}')
         tstart = 0
         tend = 200
         tsamples = 10001

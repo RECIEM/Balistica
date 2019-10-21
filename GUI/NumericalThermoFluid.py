@@ -389,9 +389,7 @@ class NumericalV2WindThermoGUI(tk.Frame):
         self.physicshandler.compute()
 
         if self.idealset.get():
-            print(f'Ideal barrier handler { self.idealset.get() }')
             self.idealphysicshandler.compute()
-            print(self.idealphysicshandler.data)
 
         self.xyGraph()
 
