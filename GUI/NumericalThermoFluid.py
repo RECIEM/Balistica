@@ -383,12 +383,15 @@ class NumericalV2WindThermoGUI(tk.Frame):
         distance, height = self.geofigbounds()
         self.physicshandler.distance = distance
         self.physicshandler.height = height
+        self.idealphysicshandler.distance = distance
+        self.idealphysicshandler.height = height
 
         self.physicshandler.compute()
 
         if self.idealset.get():
             print(f'Ideal barrier handler { self.idealset.get() }')
             self.idealphysicshandler.compute()
+            print(self.idealphysicshandler.data)
 
         self.xyGraph()
 
@@ -493,10 +496,9 @@ class NumericalV2WindThermoGUI(tk.Frame):
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Relative Height (m)')
 
-        boundarySize = 2
-
         if self.barrierset.get():
             if self.idealset.get():
+                print(self.idealphysicshandler.data)
                 maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10,
                                 self.idealphysicshandler.totalR() + 10, self.idealphysicshandler.maxH() + 10,
                                 distance + 20])
