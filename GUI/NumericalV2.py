@@ -293,11 +293,14 @@ class NumericalV2GUI(tk.Frame):
 
         if self.barrierset.get():
             maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
+            minay = np.min([0, self.physicshandler.height - 10])
         else:
             maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
+            minay = 0
 
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
-        axs.set_ylim(0, maxax)
+        axs.set_ylim(minay, maxax)
+
         axs.set_title('Projectile ballistics with drag (b) proportional to v^2')
 
         if self.barrierset.get():

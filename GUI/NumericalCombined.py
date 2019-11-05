@@ -507,6 +507,8 @@ class NumericalV2WindExtGUI(tk.Frame):
                                 distance + 20])
             else:
                 maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
+
+            minay = np.min([0, self.physicshandler.height - 10])
         else:
             if self.idealset.get():
                 maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10,
@@ -514,8 +516,11 @@ class NumericalV2WindExtGUI(tk.Frame):
             else:
                 maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
 
+            minay = 0
+
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
-        axs.set_ylim(height, maxax)
+        axs.set_ylim(minay, maxax)
+
         axs.set_title('Projectile ballistics')
 
         if self.barrierset.get():
