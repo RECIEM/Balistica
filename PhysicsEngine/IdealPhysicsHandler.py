@@ -63,7 +63,7 @@ class IdealPhysicsHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['z'] >= self.height]
+            adjdata = self.data[self.data['z'] >= np.min([0, self.height])]
             return adjdata.tail(1)['x'].values[0]
 
     def maxDistance(self):
@@ -76,19 +76,19 @@ class IdealPhysicsHandler(PhysicsHandler):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['z'] >= self.height]
+            adjdata = self.data[self.data['z'] >= np.min([0, self.height])]
             return adjdata.tail(1)['t'].values[0]
 
     def finalTheta(self):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['z'] >= self.height]
+            adjdata = self.data[self.data['z'] >= np.min([0, self.height])]
             return -1*np.rad2deg(np.arctan(adjdata.tail(1)['vy'].values[0]/adjdata.tail(1)['vx'].values[0]))
 
     def finalV(self):
         if self.data is None:
             return 0.0
         else:
-            adjdata = self.data[self.data['z'] >= self.height]
+            adjdata = self.data[self.data['z'] >= np.min([0, self.height])]
             return adjdata.tail(1)['v'].values[0]
