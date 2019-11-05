@@ -11,6 +11,7 @@ import tkinter as tk
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
+plt.rcParams.update({'figure.max_open_warning': 0})
 from PhysicsEngine import NumericalCombinedHandler
 from PhysicsEngine import IdealPhysicsHandler
 from tkinter import filedialog
