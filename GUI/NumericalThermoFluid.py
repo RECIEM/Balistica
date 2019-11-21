@@ -191,17 +191,23 @@ class NumericalV2WindThermoGUI(tk.Frame):
         self.graphcdv = tk.Button(self.blpanel, text="Cd(v) vs. v", width=10, command=self.cdvGraph, default=tk.NORMAL)
         self.graphcdv.grid(row=3, column=3)
 
+        self.graphcdre = tk.Button(self.blpanel, text="Re(v) vs. v", width=10, command=self.RevGraph, default=tk.NORMAL)
+        self.graphcdre.grid(row=4, column=2)
+
+        self.graphcdre = tk.Button(self.blpanel, text="Cd vs. Re", width=10, command=self.cdReGraph, default=tk.NORMAL)
+        self.graphcdre.grid(row=4, column=3)
+
         self.userlabel = tk.Label(self.blpanel, text="", fg="red")
-        self.userlabel.grid(row=4, column=0, columnspan=3)
+        self.userlabel.grid(row=5, column=0, columnspan=3)
 
         self.csvbutton= tk.Button(self.blpanel, text="Save to CSV", command=self.saveCSV, default=tk.NORMAL)
-        self.csvbutton.grid(row=5, column=0)
+        self.csvbutton.grid(row=6, column=0)
 
         self.pngbutton = tk.Button(self.blpanel, text="Save to PNG", command=self.savePNG, default=tk.NORMAL)
-        self.pngbutton.grid(row=5, column=1)
+        self.pngbutton.grid(row=6, column=1)
 
         self.quitbutton = tk.Button(self.blpanel, text="Quit", command=self.bye, default=tk.NORMAL)
-        self.quitbutton.grid(row=5, column=2)
+        self.quitbutton.grid(row=6, column=2)
 
         self.physicshandler.v0 = 0
         self.physicshandler.theta = 0
@@ -613,6 +619,48 @@ class NumericalV2WindThermoGUI(tk.Frame):
         axs.plot(selected['t'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Time (s)')
+        axs.set_ylabel('Cd')
+        axs.set_title('Projectile ballistics')
+
+        handles, labels = axs.get_legend_handles_labels()
+        axs.legend(handles, labels)
+
+        canvas = FigureCanvasTkAgg(figtre, master=self.rightpanel)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0)
+        self.addStatistics()
+        self.mostrecentfig = figtre
+
+    def RevGraph(self):
+        for s in self.rightpanel.grid_slaves():
+            s.destroy()
+
+        figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
+        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+        axs.plot(selected['v'], selected['re'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+
+        axs.set_xlabel('v')
+        axs.set_ylabel('Re')
+        axs.set_title('Projectile ballistics')
+
+        handles, labels = axs.get_legend_handles_labels()
+        axs.legend(handles, labels)
+
+        canvas = FigureCanvasTkAgg(figtre, master=self.rightpanel)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0)
+        self.addStatistics()
+        self.mostrecentfig = figtre
+
+    def cdReGraph(self):
+        for s in self.rightpanel.grid_slaves():
+            s.destroy()
+
+        figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
+        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+        axs.plot(selected['re'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
+
+        axs.set_xlabel('Re')
         axs.set_ylabel('Cd')
         axs.set_title('Projectile ballistics')
 
