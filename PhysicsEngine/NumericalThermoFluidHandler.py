@@ -63,7 +63,9 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         return (4.0/3.0) * np.pi * (radius ** 3)
 
     def compMu(self):
-        return self.muref * np.power(self.T / self.tref, 3.0/2) * ((self.tref + self.tsuth) / (self.T + self.tsuth))
+        mu = self.muref * np.power(self.T / self.tref, 3.0/2) * ((self.tref + self.tsuth) / (self.T + self.tsuth))
+        print(f'mu: {mu} mu_ref: {self.muref} t_ref: {self.tref} t_suth: {self.tsuth} T: {self.T}')
+        return mu
 
     def Re(self, v):
         return (self.dSph * v * self.rho) / self.mu
@@ -87,6 +89,15 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         self.m = self.dens * self.sph_volume
 
     def compute(self):
+        # Update mu value
+        self.phi = self.sphericity
+        self.A = np.exp(2.3288 - (6.4581 * self.phi) + 2.4486 * (self.phi ** 2))
+        self.B = 0.0964 + (0.5565 * self.phi)
+        self.C = np.exp(4.905 - (13.8944 * self.phi) + (18.4222 * (self.phi ** 2)) - (10.2599 * (self.phi ** 3)))
+        self.D = np.exp(1.4681 + (12.2584 * self.phi) - (20.7322 * (self.phi ** 2)) + (15.8855 * (self.phi ** 3)))
+        self.dSph = np.sqrt(self.surfArea / np.pi)
+        self.mu = self.compMu()
+
         tstart = 0
         tend = 200
         tsamples = 10001
@@ -120,12 +131,13 @@ class NumericalThermoFluidHandler(PhysicsHandler):
 
         # Record Reynolds number
         cdrng = self.Cd(vrng)
+        rerng = self.Re(vrng)
 
-        darray = np.transpose(np.array([trng, xrng, yrng, vxrng, vyrng, vrng, cdrng]))
+        darray = np.transpose(np.array([trng, xrng, yrng, vxrng, vyrng, vrng, cdrng, rerng]))
 
         self.data = pd.DataFrame(
             {'t': darray[:, 0], 'x': darray[:, 1], 'z': darray[:, 2], 'vx': darray[:, 3], 'vz': darray[:, 4],
-             'v': darray[:, 5], 'cd': darray[:, 6]})
+             'v': darray[:, 5], 'cd': darray[:, 6], 're': darray[:, 7]})
 
         if self.barrier:
             self.data = self.data[self.data['x'] <= self.distance]
