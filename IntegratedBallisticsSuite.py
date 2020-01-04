@@ -27,8 +27,8 @@ class IntegratedGUI(tk.Tk):
 
         modelsmenu = tk.Menu(menubar, tearoff=0)
         modelsmenu.add_command(label='Ideal', command=self.add_ideal_model)
-        modelsmenu.add_command(label='Analytic ~ velocity', command=self.add_anlyt_v)
         modelsmenu.add_separator()
+        modelsmenu.add_command(label='Analytic ~ velocity', command=self.add_anlyt_v)
         modelsmenu.add_command(label='Numerical ~ velocity', command=self.add_nmrcl_v)
         modelsmenu.add_command(label='Numerical ~ velocity squared', command=self.add_nmrcl_v2)
         modelsmenu.add_separator()
@@ -39,11 +39,6 @@ class IntegratedGUI(tk.Tk):
         modelsmenu.add_command(label='Numerical ~ vel. sq + wind + thermodynamics',
                                command=self.add_nmrcl_v2_wind_ext_thermo)
         menubar.add_cascade(label="Models", menu=modelsmenu)
-
-        #sessionmenu = tk.Menu(menubar, tearoff=0)
-        #sessionmenu.add_command(label='View plots', command=self.view_plots)
-        #sessionmenu.add_command(label='Compare plots', command=self.compare_plots)
-        #menubar.add_cascade(label="Session", menu=sessionmenu)
 
         helpmenu = tk.Menu(menubar, tearoff=0)
         helpmenu.add_command(label='Usage instructions', command=self.show_instructions)
@@ -151,7 +146,7 @@ class IntegratedGUI(tk.Tk):
     def show_about(self):
         message = '''
         RECIEM Costa Rica
-        All rights reserved, 2019
+        All rights reserved, 2020
         '''
         mb.showinfo("About us", message)
 
