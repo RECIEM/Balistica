@@ -44,10 +44,12 @@ class NumericalV2GUI(tk.Frame):
         self.angleinput.grid(row=0, column=1)
 
         # Control for drag
-        self.draglable = tk.Label(self.ulpanel, text='Drag coefficient (s^-1)')
+        self.draglable = tk.Label(self.ulpanel, text='Drag [b/m] (m^-1)')
         self.draglable.grid(row=1, column=0)
-        self.draginput = tk.Scale(self.ulpanel, from_=0.01, to=2, resolution=0.01, length=170, orient=tk.HORIZONTAL)
+        self.draginput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.draginput.grid(row=1, column=1)
+
+        self.draginput.insert(0, '0.0001')
 
         # Control for velocity
         self.velocitylabel = tk.Label(self.ulpanel, text='Initial velocity (m/s)')
