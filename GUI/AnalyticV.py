@@ -374,7 +374,7 @@ class AnalyticVGUI(tk.Frame):
             self.userlabel['text'] = "No computed data exists"
         else:
             fname = filedialog.asksaveasfilename(initialdir = ".", title = "Select file",filetypes = (("CSV files","*.csv"),("all files","*.*")))
-            self.physicshandler.save_csv(fname)
+            self.physicshandler.save_csv(fname+".csv")
             self.userlabel['text'] = "File saved"
 
     def savePNG(self):
@@ -383,7 +383,7 @@ class AnalyticVGUI(tk.Frame):
         else:
             fname = filedialog.asksaveasfilename(initialdir=".", title="Select file",
                                                  filetypes=(("PNG files", "*.png"), ("all files", "*.*")))
-            self.mostrecentfig.savefig(fname)
+            self.physicshandler.save_csv(fname+".png")
             self.userlabel['text'] = "File saved"
 
     def bye(self):
