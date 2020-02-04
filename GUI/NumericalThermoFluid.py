@@ -594,7 +594,12 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figvre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+
+        if self.barrierset.get():
+            selected = self.physicshandler.data[self.physicshandler.data['z'] <= self.physicshandler.height]
+        else:
+            selected = self.physicshandler.data[self.physicshandler.data['z'] >= 0]
+
         axs.plot(selected['v'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Velocity (m/s)')
@@ -615,7 +620,12 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+
+        if self.barrierset.get():
+            selected = self.physicshandler.data[self.physicshandler.data['z'] <= self.physicshandler.height]
+        else:
+            selected = self.physicshandler.data[self.physicshandler.data['z'] >= 0]
+
         axs.plot(selected['t'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Time (s)')
@@ -636,7 +646,12 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+
+        if self.barrierset.get():
+            selected = self.physicshandler.data[self.physicshandler.data['z'] <= self.physicshandler.height]
+        else:
+            selected = self.physicshandler.data[self.physicshandler.data['z'] >= 0]
+
         axs.plot(selected['v'], selected['re'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('v')
@@ -657,7 +672,12 @@ class NumericalV2WindThermoGUI(tk.Frame):
             s.destroy()
 
         figtre, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+
+        if self.barrierset.get():
+            selected = self.physicshandler.data[self.physicshandler.data['z'] <= self.physicshandler.height]
+        else:
+            selected = self.physicshandler.data[self.physicshandler.data['z'] >= 0]
+
         axs.plot(selected['re'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Re')
