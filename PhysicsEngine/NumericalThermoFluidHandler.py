@@ -44,7 +44,7 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         self.B = 0.0964 + (0.5565 * self.phi)
         self.C = np.exp(4.905 - (13.8944 * self.phi) + (18.4222 * (self.phi ** 2)) - (10.2599 * (self.phi ** 3)))
         self.D = np.exp(1.4681 + (12.2584 * self.phi) - (20.7322 * (self.phi ** 2)) + (15.8855 * (self.phi ** 3)))
-        self.dSph = np.sqrt(self.surfArea / np.pi)
+        self.dSph = np.power(self.a * self.b * self.c, 1.0/3)
         # Compute kinematic viscosity only once
         self.mu = self.compMu()
         self.dens = dens
@@ -64,7 +64,6 @@ class NumericalThermoFluidHandler(PhysicsHandler):
 
     def compMu(self):
         mu = self.muref * np.power(self.T / self.tref, 3.0/2) * ((self.tref + self.tsuth) / (self.T + self.tsuth))
-        print(f'mu: {mu} mu_ref: {self.muref} t_ref: {self.tref} t_suth: {self.tsuth} T: {self.T}')
         return mu
 
     def Re(self, v):
@@ -95,7 +94,7 @@ class NumericalThermoFluidHandler(PhysicsHandler):
         self.B = 0.0964 + (0.5565 * self.phi)
         self.C = np.exp(4.905 - (13.8944 * self.phi) + (18.4222 * (self.phi ** 2)) - (10.2599 * (self.phi ** 3)))
         self.D = np.exp(1.4681 + (12.2584 * self.phi) - (20.7322 * (self.phi ** 2)) + (15.8855 * (self.phi ** 3)))
-        self.dSph = np.sqrt(self.surfArea / np.pi)
+        self.dSph = np.power(self.a * self.b * self.c, 1.0/3)
         self.mu = self.compMu()
 
         tstart = 0
