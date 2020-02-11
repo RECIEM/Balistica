@@ -626,6 +626,8 @@ class NumericalV2WindThermoGUI(tk.Frame):
         else:
             selected = self.physicshandler.data[self.physicshandler.data['z'] >= 0]
 
+        selected = selected[selected['t'] <= self.physicshandler.totalT()]
+
         axs.plot(selected['t'], selected['cd'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         axs.set_xlabel('Time (s)')
