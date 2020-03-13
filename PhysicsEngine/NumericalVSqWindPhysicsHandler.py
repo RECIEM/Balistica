@@ -12,11 +12,13 @@ from PhysicsEngine import PhysicsHandler
 
 
 class NumericalVSqWindPhysicsHandler(PhysicsHandler):
+    # Sphericity
+    sa_norm = 1.6075
 
-    def __init__(self, v0=0, theta=0, b=1, height=0, distance=-1):
+    def __init__(self, v0=0, theta=0, d=1, height=0, distance=-1, a=0.01, b=0.01, c=0.01):
         self.v0 = v0
         self.theta = theta
-        self.b = b
+        self.D = d
         self.height = height
         self.distance = distance
         self.data = None
@@ -35,8 +37,8 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
         def acc(t, v):
             vx = v[0]
             vy = v[1]
-            dvxdt = -self.b * vx * np.sqrt(np.power(vx, 2) + np.power(vy, 2)) - self.windx
-            dvydt = -self.g - self.b * vy * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
+            dvxdt = -self.D * vx * np.sqrt(np.power(vx, 2) + np.power(vy, 2)) - self.windx
+            dvydt = -self.g - self.D * vy * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
             return [dvxdt, dvydt]
 
         # Integrate velocities
@@ -110,4 +112,3 @@ class NumericalVSqWindPhysicsHandler(PhysicsHandler):
         else:
             adjdata = self.data[self.data['z'] >= np.min([0, self.height])]
             return adjdata.tail(1)['v'].values[0]
-

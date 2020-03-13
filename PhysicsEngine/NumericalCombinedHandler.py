@@ -14,7 +14,7 @@ from PhysicsEngine import PhysicsHandler
 class NumericalCombinedHandler(PhysicsHandler):
     sa_norm = 1.6075
 
-    def __init__(self, v0=0, theta=0, dens=0.7, rho=1, a=0.0, b=0.0, c=0.0, Cd=1, height=0, distance=0):
+    def __init__(self, v0=0, theta=0, dens=0.7, rho=1, a=0.05, b=0.05, c=0.05, Cd=1, height=0, distance=0):
         self.v0 = v0
         self.theta = theta
         self.rho = rho
@@ -32,9 +32,22 @@ class NumericalCombinedHandler(PhysicsHandler):
         self.m = 0
 
     @property
+    def sphericity(self):
+        radius = np.power(self.a * self.b * self.c, 1.0 / 3)
+        sphArea = 4 * np.pi * (radius ** 2)
+        parArea = self.surfArea
+        return sphArea / parArea
+
+    @property
     def sph_volume(self):
         radius = np.power(self.a * self.b * self.c, 1.0 / 3)
         return (4.0 / 3.0) * np.pi * (radius ** 3)
+
+    @property
+    def surfArea(self):
+        projareap = np.power(self.a * self.b, self.sa_norm) + np.power(self.a * self.c, self.sa_norm) + np.power(
+            self.b * self.c, self.sa_norm)
+        return 4 * np.pi * np.power(projareap / 3.0, 1.0 / self.sa_norm)
 
     def setMass(self):
         self.m = self.dens * self.sph_volume
@@ -43,10 +56,6 @@ class NumericalCombinedHandler(PhysicsHandler):
     def norm(a, b):
         return np.sqrt(np.power(a, 2) + np.power(b, 2))
 
-    @property
-    def surfArea(self):
-        projareap = np.power(self.a*self.b, self.sa_norm) + np.power(self.a*self.c, self.sa_norm) + np.power(self.b*self.c, self.sa_norm)
-        return 4*np.pi*np.power(projareap/3.0, 1.0/self.sa_norm)
 
     def E(self, v):
         return (self.rho*v*v*self.surfArea)/(2*self.m)

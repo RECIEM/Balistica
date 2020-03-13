@@ -567,7 +567,7 @@ class NumericalV2WindExtGUI(tk.Frame):
             s.destroy()
 
         figyv, axs = plt.subplots(1, 1, figsize=(7, 6), dpi=80)
-        selected = self.physicshandler.data[self.physicshandler.data['z'] >= self.physicshandler.height]
+        selected = self.physicshandler.data[self.physicshandler.data['x'] <= self.physicshandler.totalR()]
         axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b', label='With drag ~ v^2')
 
         if self.idealset.get():
@@ -592,26 +592,35 @@ class NumericalV2WindExtGUI(tk.Frame):
         stats = tk.LabelFrame(self.rightpanel, text='Results')
         stats.grid(row=1, column=0)
 
-        rangeLabel = tk.Label(stats, text=f'Surface area: {self.physicshandler.surfArea:.4f} m^2')
-        rangeLabel.grid(row=0, column=0)
+        sphrLabel = tk.Label(stats, text=f'Sphericity: {self.physicshandler.sphericity:.4f}')
+        sphrLabel.grid(row=0, column=0)
+
+        surfLabel = tk.Label(stats, text=f'Surface area: {self.physicshandler.surfArea:.4f} m^2')
+        surfLabel.grid(row=0, column=1)
+
+        surfLabel = tk.Label(stats, text=f'Volume: {self.physicshandler.sph_volume:.4f} m^3')
+        surfLabel.grid(row=1, column=0)
+
+        massLabel = tk.Label(stats, text=f'Mass: {self.physicshandler.m:.4f} kg')
+        massLabel.grid(row=1, column=1)
 
         rangeLabel = tk.Label(stats, text=f'Range: {self.physicshandler.totalR():.1f} m')
-        rangeLabel.grid(row=1, column=0)
+        rangeLabel.grid(row=2, column=0)
 
         rangeLabel = tk.Label(stats, text=f'Max height: {self.physicshandler.maxH():.1f} m')
-        rangeLabel.grid(row=2, column=0)
+        rangeLabel.grid(row=2, column=1)
 
         mheightLabel = tk.Label(stats, text=f'Time to max height: {self.physicshandler.maxT():.1f} s')
         mheightLabel.grid(row=3, column=0)
 
         mheightLabel = tk.Label(stats, text=f'Time of flight: {self.physicshandler.totalT():.1f} s')
-        mheightLabel.grid(row=4, column=0)
+        mheightLabel.grid(row=3, column=1)
 
         mheightLabel = tk.Label(stats, text=f'Velocity of impact: {self.physicshandler.finalV():.1f} m/s')
-        mheightLabel.grid(row=5, column=0)
+        mheightLabel.grid(row=4, column=0)
 
         mheightLabel = tk.Label(stats, text=f'Angle of impact: {self.physicshandler.finalTheta():.1f} degrees')
-        mheightLabel.grid(row=6, column=0)
+        mheightLabel.grid(row=4, column=1)
 
 
     def saveCSV(self):

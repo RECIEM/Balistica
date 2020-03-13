@@ -294,10 +294,10 @@ class NumericalV2GUI(tk.Frame):
         axs.set_ylabel('Height (m)')
 
         if self.barrierset.get():
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
-            minay = np.min([0, self.physicshandler.height - 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3, distance + 3])
+            minay = np.min([0, self.physicshandler.height])
         else:
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3])
             minay = 0
 
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
