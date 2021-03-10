@@ -147,7 +147,7 @@ class IdealGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Projectile ballistics with drag (b)')
+        axs.set_title('Projectile ballistics - Ideal case')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
