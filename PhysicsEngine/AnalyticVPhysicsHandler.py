@@ -1,8 +1,9 @@
 # Red Ciudadana de Estaciones Meteorologicas
 #
-# Copyright @ 2019
+# Copyright @ 2021
 #
-# Author: Santiago Nunez-Corrales <snunezcr@gmail.com>
+# Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
+#          Jose Brenes-Andre <jbrenes54@gmail.com>
 
 import numpy as np
 import pandas as pd
