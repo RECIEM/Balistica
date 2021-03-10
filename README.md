@@ -1,6 +1,8 @@
 # RECIEM's ballistics suite
 
-**Authors:** Santiago Nunez-Corrales (snunezcr@gmail.com) and Jose Brenes-Andre (jbrenes54@gmail.com)
+**Authors:** Santiago Nunez-Corrales* (snunezcr@gmail.com) and Jose Brenes-Andre (jbrenes54@gmail.com)
+
+* Corresponding author
 
 ## Purpose
 
