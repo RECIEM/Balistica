@@ -98,12 +98,6 @@ class IntegratedGUI(tk.Tk):
         self.most_recent_frame = NumericalV2WindThermoGUI(self)
         self.most_recent_frame.pack()
 
-    def view_plots(self):
-        pass
-
-    def compare_plots(self):
-        pass
-
     def show_instructions(self):
         help_text = '''
         <html>

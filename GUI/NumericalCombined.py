@@ -214,7 +214,7 @@ class NumericalV2WindExtGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -362,10 +362,6 @@ class NumericalV2WindExtGUI(tk.Frame):
             dx = lonF - lonI
             dy = latF - latI
 
-            if dx == 0:
-                self.userlabel['text'] = "Final longitude difference must be different from zero"
-                return
-
             azimuth = windtheta
 
             if (dy >= 0) and (dx != 0):
@@ -424,7 +420,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Distance (m)')
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         handles, labels = axs.get_legend_handles_labels()
         axs.legend(handles, labels)
@@ -450,7 +446,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         handles, labels = axs.get_legend_handles_labels()
         axs.legend(handles, labels)
@@ -476,7 +472,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         handles, labels = axs.get_legend_handles_labels()
         axs.legend(handles, labels)
@@ -522,7 +518,7 @@ class NumericalV2WindExtGUI(tk.Frame):
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(minay, maxax)
 
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         if self.barrierset.get():
             axs.axvline(x=distance, linewidth=1, color='red', linestyle='--')
@@ -552,7 +548,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         handles, labels = axs.get_legend_handles_labels()
         axs.legend(handles, labels)
@@ -578,7 +574,7 @@ class NumericalV2WindExtGUI(tk.Frame):
 
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Projectile ballistics')
+        axs.set_title('Ballistics with dynamic drag (b) proportional to v^2')
 
         handles, labels = axs.get_legend_handles_labels()
         axs.legend(handles, labels)
