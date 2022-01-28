@@ -299,9 +299,6 @@ class NumericalVGravGUI(tk.Frame):
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Height (m)')
 
-        print(self.physicshandler.data['z'])
-        print(f"TotalR {self.physicshandler.totalR()}")
-
         if self.barrierset.get():
             maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
             minay = np.min([0, self.physicshandler.height - 10])
