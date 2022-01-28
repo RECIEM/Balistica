@@ -1,4 +1,5 @@
-# RECIEM's ballistics suite v. 1.0
+# BALISTICA
+
 
 **Authors:** Santiago Nunez-Corrales* (snunezcr@gmail.com) and Jose Brenes-Andre (jbrenes54@gmail.com)
 
