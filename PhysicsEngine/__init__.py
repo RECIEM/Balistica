@@ -9,8 +9,10 @@ from .PhysicsHandler import PhysicsHandler
 from .IdealPhysicsHandler import IdealPhysicsHandler
 from .AnalyticVPhysicsHandler import AnalyticVPhysicsHandler
 from .NumericalVPhysicsHandler import NumericalVPhysicsHandler
+from .NumericalVGravPhysicsHandler import NumericalVGravPhysicsHandler
 from .NumericalVSqPhysicsHandler import NumericalVSqPhysicsHandler
 from .NumericalVWindPhysicsHandler import NumericalVWindPhysicsHandler
 from .NumericalVSqWindPhysicsHandler import NumericalVSqWindPhysicsHandler
 from .NumericalCombinedHandler import NumericalCombinedHandler
 from .NumericalThermoFluidHandler import NumericalThermoFluidHandler
+from .AnalyticBertinHandler import AnalyticBertinHandler

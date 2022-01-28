@@ -9,11 +9,13 @@ from tkinterhtml import HtmlFrame
 from GUI.Ideal import IdealGUI
 from GUI.AnalyticV import AnalyticVGUI
 from GUI.NumericalV import NumericalVGUI
+from GUI.NumericalVGrav import NumericalVGravGUI
 from GUI.NumericalV2 import NumericalV2GUI
 from GUI.NumericalVWind import NumericalVWindGUI
 from GUI.NumericalV2Wind import NumericalV2WindGUI
 from GUI.NumericalCombined import NumericalV2WindExtGUI
 from GUI.NumericalThermoFluid import NumericalV2WindThermoGUI
+#from GUI.AnalyticBertin import AnalyticBertinGUI
 
 
 class IntegratedGUI(tk.Tk):
@@ -30,6 +32,7 @@ class IntegratedGUI(tk.Tk):
         modelsmenu.add_separator()
         modelsmenu.add_command(label='Analytic ~ velocity', command=self.add_anlyt_v)
         modelsmenu.add_command(label='Numerical ~ velocity', command=self.add_nmrcl_v)
+        modelsmenu.add_command(label='Numerical ~ velocity modified', command=self.add_nmrcl_vg)
         modelsmenu.add_command(label='Numerical ~ velocity squared', command=self.add_nmrcl_v2)
         modelsmenu.add_separator()
         modelsmenu.add_command(label='Numerical ~ velocity + wind', command=self.add_nmrcl_v_wind)
@@ -38,6 +41,10 @@ class IntegratedGUI(tk.Tk):
                                command=self.add_nmrcl_v2_wind_ext)
         modelsmenu.add_command(label='Numerical ~ vel. sq + wind + atmospherics',
                                command=self.add_nmrcl_v2_wind_ext_thermo)
+        modelsmenu.add_separator()
+        modelsmenu.add_command(label='Bertin Analytical',
+                               command=self.add_analyt_bertin)
+        
         menubar.add_cascade(label="Models", menu=modelsmenu)
 
         helpmenu = tk.Menu(menubar, tearoff=0)
@@ -73,6 +80,11 @@ class IntegratedGUI(tk.Tk):
         self.most_recent_frame = NumericalVGUI(self)
         self.most_recent_frame.pack()
 
+    def add_nmrcl_vg(self):
+        self.remove_prior()
+        self.most_recent_frame = NumericalVGravGUI(self)
+        self.most_recent_frame.pack()
+
     def add_nmrcl_v2(self):
         self.remove_prior()
         self.most_recent_frame = NumericalV2GUI(self)
@@ -97,6 +109,12 @@ class IntegratedGUI(tk.Tk):
         self.remove_prior()
         self.most_recent_frame = NumericalV2WindThermoGUI(self)
         self.most_recent_frame.pack()
+
+    def add_analyt_bertin(self):
+        self.remove_prior()
+        self.most_recent_frame = AnalyticBertinGUI(self)
+        self.most_recent_frame.pack()
+
 
     def show_instructions(self):
         help_text = '''
