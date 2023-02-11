@@ -1,4 +1,5 @@
 matplotlib
 numpy
 pandas
-tkinterhtml==0.7
+scypi
+tkinterhtml

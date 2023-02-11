@@ -4,92 +4,45 @@
 #
 # Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
 #          Jose Brenes-Andre <jbrenes54@gmail.com>
-
 import numpy as np
 import pandas as pd
-from scipy.integrate import solve_ivp
-from scipy.integrate import cumtrapz
-from PhysicsEngine import PhysicsHandler
+from scipy.integrate import odeint
+from balistica.PhysicsEngine.PhysicsHandler import PhysicsHandler
 
 
-class NumericalCombinedHandler(PhysicsHandler):
-    sa_norm = 1.6075
+class NumericalVWindPhysicsHandler(PhysicsHandler):
 
-    def __init__(self, v0=0, theta=0, dens=0.7, rho=1, a=0.05, b=0.05, c=0.05, Cd=1, height=0, distance=0):
+    def __init__(self, v0=0, theta=0, b=1, height=0, distance=-1):
         self.v0 = v0
         self.theta = theta
-        self.rho = rho
-        self.a = a
         self.b = b
-        self.c = c
-        self.Cd = Cd
         self.height = height
         self.distance = distance
-        self.windx = 0
         self.data = None
-        self.computeIdeal = False
+        self.windx = 0
         self.barrier = False
-        self.dens = dens
-        self.m = 0
-
-    @property
-    def sphericity(self):
-        radius = np.power(self.a * self.b * self.c, 1.0 / 3)
-        sphArea = 4 * np.pi * (radius ** 2)
-        parArea = self.surfArea
-        return sphArea / parArea
-
-    @property
-    def sph_volume(self):
-        radius = np.power(self.a * self.b * self.c, 1.0 / 3)
-        return (4.0 / 3.0) * np.pi * (radius ** 3)
-
-    @property
-    def surfArea(self):
-        projareap = np.power(self.a * self.b, self.sa_norm) + np.power(self.a * self.c, self.sa_norm) + np.power(
-            self.b * self.c, self.sa_norm)
-        return 4 * np.pi * np.power(projareap / 3.0, 1.0 / self.sa_norm)
-
-    def setMass(self):
-        self.m = self.dens * self.sph_volume
-
-    @staticmethod
-    def norm(a, b):
-        return np.sqrt(np.power(a, 2) + np.power(b, 2))
-
-
-    def E(self, v):
-        return (self.rho*v*v*self.surfArea)/(2*self.m)
 
     def compute(self):
         tstart = 0
         tend = 200
-        tsamples = 10001
+        tsamples = 5001
         trng = np.linspace(tstart, tend, tsamples)
 
-        vx0 = self.v0 * np.cos(self.theta)
-        vy0 = self.v0 * np.sin(self.theta)
+        def vx(x, t, b, v0, theta):
+            return v0 * np.cos(theta) * np.exp(-b * t) - self.windx
 
-        def acc(t, v):
-            vx = v[0]
-            vy = v[1]
+        def vy(y, t, g, b, v0, theta):
+            return (((g / b) + (v0 * np.sin(theta))) * np.exp(-b * t)) - (g / b)
 
-            v = self.norm(vx, vy)
-            Enow = self.E(v)
+        vx0 = self.v0*np.cos(self.theta)
+        vy0 = self.v0*np.sin(self.theta)
 
-            dvxdt = -Enow * self.Cd * (vx - self.windx)/v
-            dvydt = -Enow * self.Cd * (vy / v) - self.g
-            return [dvxdt, dvydt]
+        vyrng = vx(vx0, trng, self.b, self.v0, self.theta)
+        vxrng = vy(vy0, trng, self.g, self.b, self.v0, self.theta)
 
-        # Integrate velocities
-        vel0 = [vx0, vy0]
-        vel = solve_ivp(acc, [0, 200], vel0, method='RK45', t_eval=trng).y
-        vxrng = vel[0]
-        vyrng = vel[1]
-
-        # Integrate positions
-        xrng = cumtrapz(vxrng, trng, initial=0)
-        yrng = cumtrapz(vyrng, trng, initial=0)
+        # Integrate
+        xrng = odeint(vx, 0.0, trng, args=(self.b, self.v0, self.theta)).flatten()
+        yrng = odeint(vy, 0.0, trng, args=(self.g, self.b, self.v0, self.theta)).flatten()
 
         vrng = np.sqrt(np.power(vxrng, 2) + np.power(vyrng, 2))
         darray = np.transpose(np.array([trng, xrng, yrng, vxrng, vyrng, vrng]))
@@ -107,16 +60,10 @@ class NumericalCombinedHandler(PhysicsHandler):
             self.data.to_csv(filename)
 
     def maxT(self):
-        if self.data is None:
-            return 0.0
-        else:
-            return self.data[self.data['z'] == self.data['z'].max()]['t'].values[0]
+        return (1.0/self.b)*np.log(1.0 + ((self.b*self.v0*np.sin(self.theta))/self.g))
 
     def maxH(self):
-        if self.data is None:
-            return 0.0
-        else:
-            return self.data[self.data['z'] == self.data['z'].max()]['z'].values[0]
+        return ((self.v0 * np.sin(self.theta))/ self.b) - (self.g/np.power(self.b,2.0)) * np.log(1.0 + ((self.b * self.v0 * np.sin(self.theta)) / self.g))
 
     def totalR(self):
         if self.data is None:

@@ -4,12 +4,11 @@
 #
 # Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
 #          Jose Brenes-Andre <jbrenes54@gmail.com>
-
 import numpy as np
 import pandas as pd
 from scipy.integrate import solve_ivp
 from scipy.integrate import cumtrapz
-from PhysicsEngine import PhysicsHandler
+from balistica.PhysicsEngine.PhysicsHandler import PhysicsHandler
 
 
 class NumericalThermoFluidHandler(PhysicsHandler):

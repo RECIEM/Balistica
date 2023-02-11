@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BALISTICA"
+version = "1.0.0"
+authors = [
+  { name="Santiago Nunez-Corrales", email="nunezco2@illinois.edu" },
+  { name="Jose Brenes-Andre", email="jbrenes54@gmail.com" },
+]
+maintainers = [
+  { name="Santiago Nunez-Corrales", email="nunezco2@illinois.edu" },
+]
+description = "A package providing multiple simulation models for ballistic motion"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "scypi",
+    "tkinterhtml"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/RECIEM/Balistica"
+"Bug Tracker" = "https://github.com/RECIEM/Balistica/issues"
+
+[project.gui-scripts]
+balistica = "balistica:app_start"

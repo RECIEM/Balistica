@@ -4,7 +4,6 @@
 #
 # Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
 #          Jose Brenes-Andre <jbrenes54@gmail.com>
-
 import numpy as np
 import matplotlib
 import tkinter as tk
@@ -13,13 +12,13 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
 from matplotlib.figure import Figure
-from PhysicsEngine import NumericalVGravPhysicsHandler
+from balistica.PhysicsEngine.IdealPhysicsHandler import IdealPhysicsHandler
 from tkinter import filedialog
 
 
-class NumericalVGravGUI(tk.Frame):
+class IdealGUI(tk.Frame):
     def __init__(self, master=None):
-        self.physicshandler = NumericalVGravPhysicsHandler(0, 0, 0)
+        self.physicshandler = IdealPhysicsHandler(0, 0)
 
         tk.Frame.__init__(self, master)
         self.grid()
@@ -38,66 +37,54 @@ class NumericalVGravGUI(tk.Frame):
         self.ulpanel = tk.LabelFrame(self.leftpanel, text='Parameters')
         self.ulpanel.pack(side=tk.TOP)
 
-        # Control for wind parameter
-        self.ulabel = tk.Label(self.ulpanel, text='Wind parameter (m/s)')
-        self.ulabel.grid(row=0, column=0)
-        self.uinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.uinput.grid(row=0, column=1)
-
         # Control for angle
         self.anglelable = tk.Label(self.ulpanel, text='Initial angle (degrees)')
-        self.anglelable.grid(row=1, column=0)
+        self.anglelable.grid(row=0, column=0)
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170,orient=tk.HORIZONTAL)
-        self.angleinput.grid(row=1, column=1)
-
-        # Control for drag
-        self.draglable = tk.Label(self.ulpanel, text='Drag coefficient (s^-1)')
-        self.draglable.grid(row=2, column=0)
-        self.draginput = tk.Scale(self.ulpanel, from_=0.01, to=2, resolution=0.01, length=170, orient=tk.HORIZONTAL)
-        self.draginput.grid(row=2, column=1)
+        self.angleinput.grid(row=0, column=1)
 
         # Control for velocity
         self.velocitylabel = tk.Label(self.ulpanel, text='Initial velocity (m/s)')
-        self.velocitylabel.grid(row=3, column=0)
+        self.velocitylabel.grid(row=1, column=0)
         self.velocityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.velocityinput.grid(row=3, column=1)
+        self.velocityinput.grid(row=1, column=1)
 
         self.velocityinput.insert(0, '125')
 
         self.latIlabel = tk.Label(self.ulpanel, text='I. Lat (m)')
-        self.latIlabel.grid(row=4, column=0)
+        self.latIlabel.grid(row=2, column=0)
         self.lonIlabel = tk.Label(self.ulpanel, text='I. Lon (m)')
-        self.lonIlabel.grid(row=4, column=1)
+        self.lonIlabel.grid(row=2, column=1)
         self.heightIlabel = tk.Label(self.ulpanel, text='I. Height (m)')
-        self.heightIlabel.grid(row=4, column=2)
+        self.heightIlabel.grid(row=2, column=2)
 
         self.latIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.latIinput.grid(row=5, column=0)
+        self.latIinput.grid(row=3, column=0)
         self.lonIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.lonIinput.grid(row=5, column=1)
+        self.lonIinput.grid(row=3, column=1)
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.heightIinput.grid(row=5, column=2)
+        self.heightIinput.grid(row=3, column=2)
 
         self.latIinput.insert(0, '0')
         self.lonIinput.insert(0, '0')
         self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
-        self.pblanklabel.grid(row=6, column=0, columnspan=2)
+        self.pblanklabel.grid(row=4, column=0, columnspan=2)
 
         self.latFlabel = tk.Label(self.ulpanel, text='F. Lat (m)')
-        self.latFlabel.grid(row=7, column=0)
+        self.latFlabel.grid(row=5, column=0)
         self.lonFlabel = tk.Label(self.ulpanel, text='F. Lon (m)')
-        self.lonFlabel.grid(row=7, column=1)
+        self.lonFlabel.grid(row=5, column=1)
         self.heightFlabel = tk.Label(self.ulpanel, text='F. Height (m)')
-        self.heightFlabel.grid(row=7, column=2)
+        self.heightFlabel.grid(row=5, column=2)
 
         self.latFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.latFinput.grid(row=8, column=0)
+        self.latFinput.grid(row=6, column=0)
         self.lonFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.lonFinput.grid(row=8, column=1)
+        self.lonFinput.grid(row=6, column=1)
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.heightFinput.grid(row=8, column=2)
+        self.heightFinput.grid(row=6, column=2)
 
         self.latFinput.insert(0, '100')
         self.lonFinput.insert(0, '100')
@@ -106,7 +93,7 @@ class NumericalVGravGUI(tk.Frame):
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
                                            offvalue=False, text='Show barrier')
-        self.barriercheck.grid(row=9, column=0)
+        self.barriercheck.grid(row=7, column=0)
 
         # Controls grid for upper left pannel
         self.blpanel = tk.Frame(self.leftpanel)
@@ -159,7 +146,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics - Ideal case')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -212,6 +199,7 @@ class NumericalVGravGUI(tk.Frame):
     def compute(self):
         self.userlabel['text'] = ""
 
+        vel0 = 0.0
         try:
             vel0 = float(self.velocityinput.get())
         except:
@@ -219,13 +207,9 @@ class NumericalVGravGUI(tk.Frame):
             return
 
         theta = np.deg2rad(float(self.angleinput.get()))
-        b = float(self.draginput.get())
-        u = float(self.uinput.get())
 
         self.physicshandler.v0 = vel0
         self.physicshandler.theta = theta
-        self.physicshandler.b = b
-        self.physicshandler.u = u
 
         distance, height = self.geography()
 
@@ -266,7 +250,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.plot(selected['t'], selected['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figty, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -282,7 +266,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figtv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -309,7 +293,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(minay, maxax)
 
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
 
         if self.barrierset.get():
             axs.axvline(x=distance, color='red', linestyle='--')
@@ -330,7 +314,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figxv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -346,7 +330,7 @@ class NumericalVGravGUI(tk.Frame):
         axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         axs.invert_xaxis()
         canvas = FigureCanvasTkAgg(figyv, master=self.rightpanel)
         canvas.draw()
@@ -400,5 +384,5 @@ class NumericalVGravGUI(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = NumericalVGUI()
+    app = IdealGUI()
     app.mainloop()

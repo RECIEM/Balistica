@@ -4,7 +4,6 @@
 #
 # Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
 #          Jose Brenes-Andre <jbrenes54@gmail.com>
-
 import numpy as np
 import matplotlib
 import tkinter as tk
@@ -13,13 +12,13 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
 from matplotlib.figure import Figure
-from PhysicsEngine import NumericalVPhysicsHandler
+from balistica.PhysicsEngine.NumericalVSqPhysicsHandler import NumericalVSqPhysicsHandler
 from tkinter import filedialog
 
 
-class NumericalVGUI(tk.Frame):
+class NumericalV2GUI(tk.Frame):
     def __init__(self, master=None):
-        self.physicshandler = NumericalVPhysicsHandler(0, 0, 0)
+        self.physicshandler = NumericalVSqPhysicsHandler(0, 0, 0)
 
         tk.Frame.__init__(self, master)
         self.grid()
@@ -45,10 +44,12 @@ class NumericalVGUI(tk.Frame):
         self.angleinput.grid(row=0, column=1)
 
         # Control for drag
-        self.draglable = tk.Label(self.ulpanel, text='Drag coefficient (s^-1)')
+        self.draglable = tk.Label(self.ulpanel, text='Drag [b/m] (m^-1)')
         self.draglable.grid(row=1, column=0)
-        self.draginput = tk.Scale(self.ulpanel, from_=0.01, to=2, resolution=0.01, length=170, orient=tk.HORIZONTAL)
+        self.draginput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
         self.draginput.grid(row=1, column=1)
+
+        self.draginput.insert(0, '0.0001')
 
         # Control for velocity
         self.velocitylabel = tk.Label(self.ulpanel, text='Initial velocity (m/s)')
@@ -153,7 +154,7 @@ class NumericalVGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -206,6 +207,7 @@ class NumericalVGUI(tk.Frame):
     def compute(self):
         self.userlabel['text'] = ""
 
+        vel0 = 0.0
         try:
             vel0 = float(self.velocityinput.get())
         except:
@@ -242,7 +244,7 @@ class NumericalVGUI(tk.Frame):
         axs.plot(selected['t'], selected['x'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Distance (m)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(figtx, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -258,7 +260,7 @@ class NumericalVGUI(tk.Frame):
         axs.plot(selected['t'], selected['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(figty, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -274,7 +276,7 @@ class NumericalVGUI(tk.Frame):
         axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(figtv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -292,16 +294,16 @@ class NumericalVGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
 
         if self.barrierset.get():
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
-            minay = np.min([0, self.physicshandler.height - 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3, distance + 3])
+            minay = np.min([0, self.physicshandler.height])
         else:
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3])
             minay = 0
 
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(minay, maxax)
 
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
 
         if self.barrierset.get():
             axs.axvline(x=distance, color='red', linestyle='--')
@@ -322,7 +324,7 @@ class NumericalVGUI(tk.Frame):
         axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         canvas = FigureCanvasTkAgg(figxv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -338,7 +340,7 @@ class NumericalVGUI(tk.Frame):
         axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with constant drag (b) proportional to v^2')
         axs.invert_xaxis()
         canvas = FigureCanvasTkAgg(figyv, master=self.rightpanel)
         canvas.draw()
@@ -392,5 +394,5 @@ class NumericalVGUI(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = NumericalVGUI()
+    app = NumericalV2GUI()
     app.mainloop()
