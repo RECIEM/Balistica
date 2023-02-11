@@ -4,7 +4,6 @@
 #
 # Authors: Santiago Nunez-Corrales <snunezcr@gmail.com>
 #          Jose Brenes-Andre <jbrenes54@gmail.com>
-
 import sys
 import numpy as np
 import matplotlib
