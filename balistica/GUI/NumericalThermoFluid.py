@@ -13,12 +13,12 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
-from PhysicsEngine import NumericalThermoFluidHandler
-from PhysicsEngine import IdealPhysicsHandler
+from balistica.PhysicsEngine import NumericalThermoFluidHandler
+from balistica.PhysicsEngine.IdealPhysicsHandler import IdealPhysicsHandler
 from tkinter import filedialog
 
 
-class NumericalV2WindThermoGUI(tk.Frame):
+class NumericalV2ThermoFluidGUI(tk.Frame):
     def __init__(self, master=None):
         self.physicshandler = NumericalThermoFluidHandler()
         self.idealphysicshandler = IdealPhysicsHandler()

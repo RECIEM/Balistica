@@ -7,12 +7,11 @@
 
 import numpy as np
 import pandas as pd
-from scipy.integrate import solve_ivp
-from scipy.integrate import cumtrapz
-from PhysicsEngine import PhysicsHandler
+from scipy.integrate import odeint
+from balistica.PhysicsEngine.PhysicsHandler import PhysicsHandler
 
 
-class NumericalVSqPhysicsHandler(PhysicsHandler):
+class NumericalVGravPhysicsHandler(PhysicsHandler):
 
     def __init__(self, v0=0, theta=0, b=1, height=-1, distance=-1):
         self.v0 = v0
@@ -22,38 +21,40 @@ class NumericalVSqPhysicsHandler(PhysicsHandler):
         self.distance = distance
         self.data = None
         self.barrier = False
+        self.m = 1
+        self.u = 0
 
     def compute(self):
         tstart = 0
         tend = 200
-        tsamples = 10001
+        tsamples = 5001
         trng = np.linspace(tstart, tend, tsamples)
 
-        vx0 = self.v0 * np.cos(self.theta)
-        vy0 = self.v0 * np.sin(self.theta)
+        # Update the value of effective velocity
+        self.g = self.g - self.b*self.u
 
-        def acc(t, v):
-            vx = v[0]
-            vy = v[1]
-            dvxdt = -self.b * vx * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
-            dvydt = -self.g - self.b * vy * np.sqrt(np.power(vx, 2) + np.power(vy, 2))
-            return [dvxdt, dvydt]
+        def vx(x, t, b, v0, theta):
+            return v0 * np.cos(theta) * np.exp(-b * t)
 
-        # Integrate velocities
-        vel0 = [vx0, vy0]
-        vel = solve_ivp(acc, [0, 200], vel0, method='RK45', t_eval=trng).y
-        vxrng = vel[0]
-        vyrng = vel[1]
+        def vy(y, t, g, b, v0, theta):
+            return (((g / b) + (v0 * np.sin(theta))) * np.exp(-b * t)) - (g / b)
 
-        # Integrate positions
-        xrng = cumtrapz(vxrng, trng, initial=0)
-        yrng = cumtrapz(vyrng, trng, initial=0)
+        vx0 = self.v0*np.cos(self.theta)
+        vy0 = self.v0*np.sin(self.theta)
+
+        vyrng = vx(vx0, trng, self.b, self.v0, self.theta)
+        vxrng = vy(vy0, trng, self.g, self.b, self.v0, self.theta)
+
+        # Integrate
+        xrng = odeint(vx, 0.0, trng, args=(self.b, self.v0, self.theta)).flatten()
+        yrng = odeint(vy, 0.0, trng, args=(self.g, self.b, self.v0, self.theta)).flatten()
 
         vrng = np.sqrt(np.power(vxrng, 2) + np.power(vyrng, 2))
         darray = np.transpose(np.array([trng, xrng, yrng, vxrng, vyrng, vrng]))
         self.data = pd.DataFrame(
             {'t': darray[:, 0], 'x': darray[:, 1], 'z': darray[:, 2], 'vx': darray[:, 3], 'vz': darray[:, 4],
              'v': darray[:, 5]})
+
 
         if self.barrier:
             self.data = self.data[self.data['x'] <= self.distance]
@@ -65,16 +66,10 @@ class NumericalVSqPhysicsHandler(PhysicsHandler):
             self.data.to_csv(filename)
 
     def maxT(self):
-        if self.data is None:
-            return 0.0
-        else:
-            return self.data[self.data['z'] == self.data['z'].max()]['t'].values[0]
+        return (1.0/self.b)*np.log(1.0 + ((self.b*self.v0*np.sin(self.theta))/self.g))
 
     def maxH(self):
-        if self.data is None:
-            return 0.0
-        else:
-            return self.data[self.data['z'] == self.data['z'].max()]['z'].values[0]
+        return ((self.v0 * np.sin(self.theta))/ self.b) - (self.g/np.power(self.b,2.0)) * np.log(1.0 + ((self.b * self.v0 * np.sin(self.theta)) / self.g))
 
     def totalR(self):
         if self.data is None:

@@ -6,17 +6,15 @@
 import tkinter as tk
 from tkinter import messagebox as mb
 from tkinterhtml import HtmlFrame
-from GUI.Ideal import IdealGUI
-from GUI.AnalyticV import AnalyticVGUI
-from GUI.NumericalV import NumericalVGUI
-from GUI.NumericalVGrav import NumericalVGravGUI
-from GUI.NumericalV2 import NumericalV2GUI
-from GUI.NumericalVWind import NumericalVWindGUI
-from GUI.NumericalV2Wind import NumericalV2WindGUI
-from GUI.NumericalCombined import NumericalV2WindExtGUI
-from GUI.NumericalThermoFluid import NumericalV2WindThermoGUI
-#from GUI.AnalyticBertin import AnalyticBertinGUI
-
+from balistica.GUI.Ideal import IdealGUI
+from balistica.GUI.AnalyticV import AnalyticVGUI
+from balistica.GUI.NumericalV import NumericalVGUI
+from balistica.GUI.NumericalVGrav import NumericalVGravGUI
+from balistica.GUI.NumericalV2 import NumericalV2GUI
+from balistica.GUI.NumericalVWind import NumericalVWindGUI
+from balistica.GUI.NumericalV2Wind import NumericalV2WindGUI
+from balistica.GUI.NumericalCombined import NumericalV2CombinedGUI
+from balistica.GUI.NumericalThermoFluid import NumericalV2ThermoFluidGUI
 
 class IntegratedGUI(tk.Tk):
 
@@ -41,9 +39,9 @@ class IntegratedGUI(tk.Tk):
                                command=self.add_nmrcl_v2_wind_ext)
         modelsmenu.add_command(label='Numerical ~ vel. sq + wind + atmospherics',
                                command=self.add_nmrcl_v2_wind_ext_thermo)
-        modelsmenu.add_separator()
-        modelsmenu.add_command(label='Bertin Analytical',
-                               command=self.add_analyt_bertin)
+        # modelsmenu.add_separator()
+        # modelsmenu.add_command(label='Bertin Analytical',
+        #                       command=self.add_analyt_bertin)
         
         menubar.add_cascade(label="Models", menu=modelsmenu)
 
@@ -102,19 +100,13 @@ class IntegratedGUI(tk.Tk):
 
     def add_nmrcl_v2_wind_ext(self):
         self.remove_prior()
-        self.most_recent_frame = NumericalV2WindExtGUI(self)
+        self.most_recent_frame = NumericalV2CombinedGUI(self)
         self.most_recent_frame.pack()
 
     def add_nmrcl_v2_wind_ext_thermo(self):
         self.remove_prior()
-        self.most_recent_frame = NumericalV2WindThermoGUI(self)
+        self.most_recent_frame = NumericalV2ThermoFluidGUI(self)
         self.most_recent_frame.pack()
-
-    def add_analyt_bertin(self):
-        self.remove_prior()
-        self.most_recent_frame = AnalyticBertinGUI(self)
-        self.most_recent_frame.pack()
-
 
     def show_instructions(self):
         help_text = '''

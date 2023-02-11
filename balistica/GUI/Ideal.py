@@ -13,14 +13,13 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
 from matplotlib.figure import Figure
-from PhysicsEngine import NumericalVWindPhysicsHandler
+from balistica.PhysicsEngine.IdealPhysicsHandler import IdealPhysicsHandler
 from tkinter import filedialog
 
 
-class NumericalVWindGUI(tk.Frame):
+class IdealGUI(tk.Frame):
     def __init__(self, master=None):
-        self.physicshandler = NumericalVWindPhysicsHandler(0, 0, 0)
-        self.bounds = None
+        self.physicshandler = IdealPhysicsHandler(0, 0)
 
         tk.Frame.__init__(self, master)
         self.grid()
@@ -45,54 +44,48 @@ class NumericalVWindGUI(tk.Frame):
         self.angleinput = tk.Scale(self.ulpanel, from_=0, to=90, resolution=1, length=170,orient=tk.HORIZONTAL)
         self.angleinput.grid(row=0, column=1)
 
-        # Control for drag
-        self.draglable = tk.Label(self.ulpanel, text='Drag coefficient (s^-1)')
-        self.draglable.grid(row=1, column=0)
-        self.draginput = tk.Scale(self.ulpanel, from_=0.01, to=2, resolution=0.01, length=170, orient=tk.HORIZONTAL)
-        self.draginput.grid(row=1, column=1)
-
         # Control for velocity
         self.velocitylabel = tk.Label(self.ulpanel, text='Initial velocity (m/s)')
-        self.velocitylabel.grid(row=2, column=0)
+        self.velocitylabel.grid(row=1, column=0)
         self.velocityinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.velocityinput.grid(row=2, column=1)
+        self.velocityinput.grid(row=1, column=1)
 
         self.velocityinput.insert(0, '125')
 
         self.latIlabel = tk.Label(self.ulpanel, text='I. Lat (m)')
-        self.latIlabel.grid(row=3, column=0)
+        self.latIlabel.grid(row=2, column=0)
         self.lonIlabel = tk.Label(self.ulpanel, text='I. Lon (m)')
-        self.lonIlabel.grid(row=3, column=1)
+        self.lonIlabel.grid(row=2, column=1)
         self.heightIlabel = tk.Label(self.ulpanel, text='I. Height (m)')
-        self.heightIlabel.grid(row=3, column=2)
+        self.heightIlabel.grid(row=2, column=2)
 
         self.latIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.latIinput.grid(row=4, column=0)
+        self.latIinput.grid(row=3, column=0)
         self.lonIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.lonIinput.grid(row=4, column=1)
+        self.lonIinput.grid(row=3, column=1)
         self.heightIinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.heightIinput.grid(row=4, column=2)
+        self.heightIinput.grid(row=3, column=2)
 
         self.latIinput.insert(0, '0')
         self.lonIinput.insert(0, '0')
         self.heightIinput.insert(0, '0')
 
         self.pblanklabel = tk.Label(self.ulpanel, text='')
-        self.pblanklabel.grid(row=5, column=0, columnspan=2)
+        self.pblanklabel.grid(row=4, column=0, columnspan=2)
 
         self.latFlabel = tk.Label(self.ulpanel, text='F. Lat (m)')
-        self.latFlabel.grid(row=6, column=0)
+        self.latFlabel.grid(row=5, column=0)
         self.lonFlabel = tk.Label(self.ulpanel, text='F. Lon (m)')
-        self.lonFlabel.grid(row=6, column=1)
+        self.lonFlabel.grid(row=5, column=1)
         self.heightFlabel = tk.Label(self.ulpanel, text='F. Height (m)')
-        self.heightFlabel.grid(row=6, column=2)
+        self.heightFlabel.grid(row=5, column=2)
 
         self.latFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.latFinput.grid(row=7, column=0)
+        self.latFinput.grid(row=6, column=0)
         self.lonFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.lonFinput.grid(row=7, column=1)
+        self.lonFinput.grid(row=6, column=1)
         self.heightFinput = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.heightFinput.grid(row=7, column=2)
+        self.heightFinput.grid(row=6, column=2)
 
         self.latFinput.insert(0, '100')
         self.lonFinput.insert(0, '100')
@@ -101,22 +94,7 @@ class NumericalVWindGUI(tk.Frame):
         self.barrierset = tk.BooleanVar()
         self.barriercheck = tk.Checkbutton(self.ulpanel, justify=tk.RIGHT, variable=self.barrierset, onvalue=True,
                                            offvalue=False, text='Show barrier')
-        self.barriercheck.grid(row=8, column=0)
-
-        self.pwindlabel = tk.Label(self.ulpanel, text='Wind settings:')
-        self.pwindlabel.grid(row=9, column=0, columnspan=2)
-
-        self.windanlabel = tk.Label(self.ulpanel, text='Azimuth (degrees):')
-        self.windanlabel.grid(row=10, column=0)
-        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=360, orient=tk.HORIZONTAL)
-        self.windangle.grid(row=10, column=1, columnspan=2)
-
-        self.windmglabel = tk.Label(self.ulpanel, text='Magnitude (m/s):')
-        self.windmglabel.grid(row=11, column=0)
-        self.windmag = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.windmag.grid(row=11, column=1)
-
-        self.windmag.insert(0, '0')
+        self.barriercheck.grid(row=7, column=0)
 
         # Controls grid for upper left pannel
         self.blpanel = tk.Frame(self.leftpanel)
@@ -169,7 +147,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
         axs.set_xlim(0, 100)
         axs.set_ylim(0, 100)
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics - Ideal case')
         canvas = FigureCanvasTkAgg(fig, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -219,103 +197,10 @@ class NumericalVWindGUI(tk.Frame):
 
         return (distance, height)
 
-    def consumebounds(self):
-        latI = 0.0
-        try:
-            latI = float(self.latIinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        latF = 0.0
-        try:
-            latF = float(self.latFinput.get())
-        except:
-            self.userlabel['text'] = "Final latitude format incorrect"
-            self.bounds = None
-
-        lonI = 0.0
-        try:
-            lonI = float(self.lonIinput.get())
-        except:
-            self.userlabel['text'] = "Initial longitude format incorrect"
-            self.bounds = None
-
-        lonF = 0.0
-        try:
-            lonF = float(self.lonFinput.get())
-        except:
-            self.userlabel['text'] = "Final longitude format incorrect"
-            self.bounds = None
-
-        heightI = 0.0
-        try:
-            heightI = float(self.heightIinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        heightF = 0.0
-        try:
-            heightF = float(self.heightFinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        self.bounds = (latI, latF, lonI, lonF, heightI, heightF)
-
-    def consumeparams(self):
-        # Process lat, lon and height data
-        self.consumebounds()
-
-        # With that, compute the contribution of wind in x, z
-        if self.bounds is not None:
-            # First, compute the components of the wind
-            try:
-                windmag = float(self.windmag.get())
-            except:
-                self.userlabel['text'] = "Wind speed magnitude, format incorrect"
-                return
-
-            try:
-                windtheta = np.deg2rad(float(self.windangle.get()))
-            except:
-                self.userlabel['text'] = "Wind angle, format incorrect"
-                return
-
-            # Second, compute the linear transformation that computes the inner product of
-            # wind contribution with respect to the direction of the trajectory
-            latI, latF, lonI, lonF, _, _ = self.bounds
-
-            dx = lonF - lonI
-            dy = latF - latI
-
-            if dx == 0:
-                self.userlabel['text'] = "Final longitude difference must be different from zero"
-                return
-
-            azimuth = windtheta
-
-            if (dy >= 0) and (dx != 0):
-                beta = np.arctan(dy / dx)
-            elif (dy < 0) and (dx != 0):
-                beta = np.pi + np.arctan(dy / dx)
-            elif (dy >= 0) and (dx == 0):
-                beta = 0
-            else:
-                beta = np.pi
-
-            self.physicshandler.windx = -windmag*np.cos(azimuth - beta)
-            self.goodparams = True
-
     def compute(self):
-        self.consumeparams()
-
-        if not self.goodparams:
-            return
-
         self.userlabel['text'] = ""
 
+        vel0 = 0.0
         try:
             vel0 = float(self.velocityinput.get())
         except:
@@ -323,11 +208,9 @@ class NumericalVWindGUI(tk.Frame):
             return
 
         theta = np.deg2rad(float(self.angleinput.get()))
-        b = float(self.draginput.get())
 
         self.physicshandler.v0 = vel0
         self.physicshandler.theta = theta
-        self.physicshandler.b = b
 
         distance, height = self.geography()
 
@@ -368,7 +251,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.plot(selected['t'], selected['z'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Height (m)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figty, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -384,7 +267,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.plot(selected['t'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Time (s)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figtv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -411,7 +294,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(minay, maxax)
 
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
 
         if self.barrierset.get():
             axs.axvline(x=distance, color='red', linestyle='--')
@@ -432,7 +315,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.plot(selected['x'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Distance (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         canvas = FigureCanvasTkAgg(figxv, master=self.rightpanel)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0)
@@ -448,7 +331,7 @@ class NumericalVWindGUI(tk.Frame):
         axs.plot(selected['z'], selected['v'], '-', linewidth=2, color='b')
         axs.set_xlabel('Height (m)')
         axs.set_ylabel('Velocity (m/s)')
-        axs.set_title('Ballistics with constant drag (b) proportional to v')
+        axs.set_title('Ballistics with drag (b) proportional to v')
         axs.invert_xaxis()
         canvas = FigureCanvasTkAgg(figyv, master=self.rightpanel)
         canvas.draw()
@@ -502,5 +385,5 @@ class NumericalVWindGUI(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = NumericalVWindGUI()
+    app = IdealGUI()
     app.mainloop()

@@ -13,7 +13,7 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
 from matplotlib.figure import Figure
-from PhysicsEngine import NumericalVPhysicsHandler
+from balistica.PhysicsEngine.NumericalVPhysicsHandler import NumericalVPhysicsHandler
 from tkinter import filedialog
 
 

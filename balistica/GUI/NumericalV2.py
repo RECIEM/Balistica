@@ -13,13 +13,13 @@ matplotlib.use("TkAgg")
 from matplotlib import pyplot as plt
 plt.rcParams.update({'figure.max_open_warning': 0})
 from matplotlib.figure import Figure
-from PhysicsEngine import NumericalVSqWindPhysicsHandler
+from balistica.PhysicsEngine.NumericalVSqPhysicsHandler import NumericalVSqPhysicsHandler
 from tkinter import filedialog
 
 
-class NumericalV2WindGUI(tk.Frame):
+class NumericalV2GUI(tk.Frame):
     def __init__(self, master=None):
-        self.physicshandler = NumericalVSqWindPhysicsHandler(0, 0, 0)
+        self.physicshandler = NumericalVSqPhysicsHandler(0, 0, 0)
 
         tk.Frame.__init__(self, master)
         self.grid()
@@ -104,25 +104,11 @@ class NumericalV2WindGUI(tk.Frame):
                                            offvalue=False, text='Show barrier')
         self.barriercheck.grid(row=8, column=0)
 
-        self.pwindlabel = tk.Label(self.ulpanel, text='Wind settings:')
-        self.pwindlabel.grid(row=9, column=0, columnspan=2)
-
-        self.windanlabel = tk.Label(self.ulpanel, text='Azimuth (degrees):')
-        self.windanlabel.grid(row=10, column=0)
-        self.windangle = tk.Scale(self.ulpanel, from_=0, to=359, resolution=1, length=360, orient=tk.HORIZONTAL)
-        self.windangle.grid(row=10, column=1, columnspan=2)
-
-        self.windmglabel = tk.Label(self.ulpanel, text='Magnitude (m/s):')
-        self.windmglabel.grid(row=11, column=0)
-        self.windmag = tk.Entry(self.ulpanel, justify=tk.RIGHT, width=10)
-        self.windmag.grid(row=11, column=1)
-
-        self.windmag.insert(0, '0')
-
         # Controls grid for upper left pannel
         self.blpanel = tk.Frame(self.leftpanel)
         self.blpanel.pack(side=tk.BOTTOM)
 
+        # Buttons for various functions
         # Buttons for various functions
         self.blanklabel= tk.Label(self.blpanel, text="")
         self.blanklabel.grid(row=0, column=0, columnspan=2)
@@ -219,103 +205,10 @@ class NumericalV2WindGUI(tk.Frame):
 
         return (distance, height)
 
-    def consumebounds(self):
-        latI = 0.0
-        try:
-            latI = float(self.latIinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        latF = 0.0
-        try:
-            latF = float(self.latFinput.get())
-        except:
-            self.userlabel['text'] = "Final latitude format incorrect"
-            self.bounds = None
-
-        lonI = 0.0
-        try:
-            lonI = float(self.lonIinput.get())
-        except:
-            self.userlabel['text'] = "Initial longitude format incorrect"
-            self.bounds = None
-
-        lonF = 0.0
-        try:
-            lonF = float(self.lonFinput.get())
-        except:
-            self.userlabel['text'] = "Final longitude format incorrect"
-            self.bounds = None
-
-        heightI = 0.0
-        try:
-            heightI = float(self.heightIinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        heightF = 0.0
-        try:
-            heightF = float(self.heightFinput.get())
-        except:
-            self.userlabel['text'] = "Initial latitude format incorrect"
-            self.bounds = None
-
-        self.bounds = (latI, latF, lonI, lonF, heightI, heightF)
-
-    def consumeparams(self):
-        # Process lat, lon and height data
-        self.consumebounds()
-
-        # With that, compute the contribution of wind in x, z
-        if self.bounds is not None:
-            # First, compute the components of the wind
-            try:
-                windmag = float(self.windmag.get())
-            except:
-                self.userlabel['text'] = "Wind speed magnitude, format incorrect"
-                return
-
-            try:
-                windtheta = np.deg2rad(float(self.windangle.get()))
-            except:
-                self.userlabel['text'] = "Wind angle, format incorrect"
-                return
-
-            # Second, compute the linear transformation that computes the inner product of
-            # wind contribution with respect to the direction of the trajectory
-            latI, latF, lonI, lonF, _, _ = self.bounds
-
-            dx = lonF - lonI
-            dy = latF - latI
-
-            if dx == 0:
-                self.userlabel['text'] = "Final longitude difference must be different from zero"
-                return
-
-            azimuth = windtheta
-
-            if (dy >= 0) and (dx != 0):
-                beta = np.arctan(dy / dx)
-            elif (dy < 0) and (dx != 0):
-                beta = np.pi + np.arctan(dy / dx)
-            elif (dy >= 0) and (dx == 0):
-                beta = 0
-            else:
-                beta = np.pi
-
-            self.physicshandler.windx = -windmag * np.cos(azimuth - beta)
-            self.goodparams = True
-
     def compute(self):
-        self.consumeparams()
-
-        if not self.goodparams:
-            return
-
         self.userlabel['text'] = ""
 
+        vel0 = 0.0
         try:
             vel0 = float(self.velocityinput.get())
         except:
@@ -402,14 +295,15 @@ class NumericalV2WindGUI(tk.Frame):
         axs.set_ylabel('Height (m)')
 
         if self.barrierset.get():
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10, distance + 20])
-            minay = np.min([0, self.physicshandler.height - 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3, distance + 3])
+            minay = np.min([0, self.physicshandler.height])
         else:
-            maxax = np.max([self.physicshandler.totalR() + 10, self.physicshandler.maxH() + 10])
+            maxax = np.max([self.physicshandler.totalR() + 3, self.physicshandler.maxH() + 3])
             minay = 0
 
         axs.set_xlim(np.min([0, self.physicshandler.totalR()]), maxax)
         axs.set_ylim(minay, maxax)
+
         axs.set_title('Ballistics with constant drag (b) proportional to v^2')
 
         if self.barrierset.get():
@@ -501,5 +395,5 @@ class NumericalV2WindGUI(tk.Frame):
 
 
 if __name__ == "__main__":
-    app = NumericalV2WindGUI()
+    app = NumericalV2GUI()
     app.mainloop()
