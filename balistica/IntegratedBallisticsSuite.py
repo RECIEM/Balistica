@@ -153,7 +153,3 @@ class IntegratedGUI(tk.Tk):
         All rights reserved, 2020
         '''
         mb.showinfo("About us", message)
-
-if __name__ == "__main__":
-    app = IntegratedGUI()
-    app.mainloop()

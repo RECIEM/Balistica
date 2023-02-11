@@ -15,3 +15,9 @@ from balistica.PhysicsEngine.NumericalVWindPhysicsHandler import NumericalVWindP
 from balistica.PhysicsEngine.NumericalVSqWindPhysicsHandler import NumericalVSqWindPhysicsHandler
 from balistica.PhysicsEngine.NumericalCombinedHandler import NumericalCombinedHandler
 from balistica.PhysicsEngine.NumericalThermoFluidHandler import NumericalThermoFluidHandler
+from balistica.IntegratedBallisticsSuite import IntegratedGUI
+
+
+def app_start():
+    app = IntegratedGUI()
+    app.mainloop()
