@@ -1,5 +1,5 @@
 matplotlib
+scipy
 numpy
 pandas
-scypi
 tkinterhtml
