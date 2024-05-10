@@ -24,7 +24,7 @@ dependencies = [
     "matplotlib",
     "numpy",
     "pandas",
-    "scypi",
+    "scipy",
     "tkinterhtml"
 ]
 
